@@ -19,8 +19,10 @@ public class Reservasi {
     @GeneratedValue
     private Integer id;
     private String emailUser;
-    private Integer idStatusPembayaran;
+    @Enumerated(EnumType.STRING)
+    private StatusPembayaran statusPembayaran;
     private String buktiTransfer;
+
     @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
     private List<Tambahan> tambahanList;
 }

@@ -31,10 +31,10 @@ dependencies {
 	implementation ("org.springframework.security:spring-security-test")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	runtimeOnly("org.postgresql:postgresql")
-	implementation(group = "io.jsonwebtoken", name = "jjwt-api", version = "0.11.5")
-	runtimeOnly(group = "io.jsonwebtoken", name = "jjwt-impl", version = "0.11.5")
-	runtimeOnly(group = "io.jsonwebtoken", name = "jjwt-jackson", version = "0.11.5")
-	implementation(group = "com.google.guava", name = "guava", version = "31.1-jre")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	implementation("com.google.guava:guava:31.1-jre")
 }
 
 tasks.withType<Test> {

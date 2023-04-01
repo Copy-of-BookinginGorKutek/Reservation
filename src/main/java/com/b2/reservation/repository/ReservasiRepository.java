@@ -12,5 +12,5 @@ public interface ReservasiRepository extends JpaRepository<Reservasi, Integer> {
     List<Reservasi> findAll();
     @NonNull
     Optional<Reservasi> findById(@NonNull Integer id);
-    List<Reservasi> findAllByUserId(Integer userId);
+    List<Reservasi> findAllByEmailUser(String emailUser);
 }
