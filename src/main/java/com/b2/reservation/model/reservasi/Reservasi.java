@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,4 +21,6 @@ public class Reservasi {
     private String emailUser;
     private Integer idStatusPembayaran;
     private String buktiTransfer;
+    @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
+    private List<Tambahan> tambahanList;
 }
