@@ -1,4 +1,5 @@
 package com.b2.reservation.controller;
+
 import com.b2.reservation.Util;
 import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.model.reservasi.StatusPembayaran;
@@ -113,6 +114,40 @@ class ReservationControllerTest {
                 .andExpect(handler().methodName("deleteReservation"));
 
         verify(service, atLeastOnce()).delete(any(Integer.class));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void testUpdateReservationUser() throws Exception {
+        when(service.update(any(Integer.class), any(ReservasiRequest.class))).thenReturn(reservasi);
+
+        mvc.perform(put("/reservation/bukti-bayar/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(Util.mapToJson(bodyContent))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("putProofOfPayment"))
+                .andExpect(jsonPath("$.id").value(reservasi.getId()))
+                .andExpect(jsonPath("$.emailUser").value(reservasi.getEmailUser()));
+
+        verify(service, atLeastOnce()).update(any(Integer.class), any(ReservasiRequest.class));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void testUpdateReservationAdmin() throws Exception {
+        when(service.update(any(Integer.class), any(ReservasiRequest.class))).thenReturn(reservasi);
+
+        mvc.perform(put("/reservation/stat-update/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(Util.mapToJson(bodyContent))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("updateReservation"))
+                .andExpect(jsonPath("$.id").value(reservasi.getId()))
+                .andExpect(jsonPath("$.emailUser").value(reservasi.getEmailUser()));
+
+        verify(service, atLeastOnce()).update(any(Integer.class), any(ReservasiRequest.class));
     }
 }
 
