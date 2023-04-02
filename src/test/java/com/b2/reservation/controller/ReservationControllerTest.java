@@ -48,8 +48,7 @@ class ReservationControllerTest {
             public final Integer id = 1;
             public final String emailUser = "test@email.com";
             public final StatusPembayaran statusPembayaran= StatusPembayaran.MENUNGGU_PEMBAYARAN;
-            public final String buktiTransfer = null;
-            public final String tambahanList=null;
+
         };
 
     }
