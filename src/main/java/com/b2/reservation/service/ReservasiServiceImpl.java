@@ -54,6 +54,10 @@ public class ReservasiServiceImpl implements ReservasiService {
         reservasiRepository.deleteById(id);
     }
 
+    @Override
+    public List<Reservasi> findAllByEmailUser(String email){
+        return reservasiRepository.findAllByEmailUser(email);
+    }
     private boolean isReservasiDoesNotExist(Integer id) {
         return reservasiRepository.findById(id).isEmpty();
     }
