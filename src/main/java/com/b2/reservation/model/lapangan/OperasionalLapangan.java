@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_opersional_lapangan")
+@Table(name = "_operasional_lapangan")
 public class OperasionalLapangan {
     @Id
     @GeneratedValue
