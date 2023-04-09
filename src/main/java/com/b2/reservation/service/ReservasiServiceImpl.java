@@ -31,7 +31,7 @@ public class ReservasiServiceImpl implements ReservasiService {
     public Reservasi create(ReservasiRequest request) {
         Reservasi reservasi = new Reservasi(null, request.getEmailUser(),
                 request.getStatusPembayaran(), request.getBuktiTransfer(),
-                null);
+                request.getTambahanList());
         return reservasiRepository.save(reservasi);
     }
 
@@ -42,7 +42,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         }
         Reservasi reservasi = new Reservasi(id, request.getEmailUser(),
                 request.getStatusPembayaran(), request.getBuktiTransfer(),
-                null);
+                request.getTambahanList());
         return this.reservasiRepository.save(reservasi);
     }
 
