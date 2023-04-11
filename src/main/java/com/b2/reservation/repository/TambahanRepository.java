@@ -1,5 +1,6 @@
 package com.b2.reservation.repository;
 
+import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.model.reservasi.Tambahan;
 import lombok.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface TambahanRepository extends JpaRepository<Tambahan, Integer> {
 
     @NonNull
     Optional<Tambahan> findById(@NonNull Integer id);
+
+    List<Tambahan> findByReservasi(@NonNull Reservasi reservasi);
 }

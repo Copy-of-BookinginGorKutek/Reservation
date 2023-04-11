@@ -13,8 +13,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "_lapangan")
 public class Lapangan {
+    private static Integer cost = 50000;
     @Id
     @GeneratedValue
     private Integer id;
+
+    public static Integer getCost(){ return cost; }
+    public static void setCost(Integer harga){ cost = harga; }
 
 }
