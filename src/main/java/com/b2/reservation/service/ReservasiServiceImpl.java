@@ -1,9 +1,7 @@
 package com.b2.reservation.service;
 
 import com.b2.reservation.exceptions.ReservasiDoesNotExistException;
-import com.b2.reservation.model.lapangan.LapanganReservasi;
 import com.b2.reservation.model.reservasi.Reservasi;
-import com.b2.reservation.repository.LapanganReservasiRepository;
 import com.b2.reservation.repository.ReservasiRepository;
 import com.b2.reservation.repository.TambahanRepository;
 import com.b2.reservation.request.ReservasiRequest;
@@ -19,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservasiServiceImpl implements ReservasiService {
     private final ReservasiRepository reservasiRepository;
-    private final LapanganReservasiRepository lapanganReservasiRepository;
     private final TambahanUtils tambahanUtils;
     private final TambahanRepository tambahanRepository;
     @Override
@@ -44,7 +41,6 @@ public class ReservasiServiceImpl implements ReservasiService {
                 .buktiTransfer(request.getBuktiTransfer())
                 .build();
         reservasi = reservasiRepository.save(reservasi);
-        createLapanganReservasi(reservasi, request);
         tambahanUtils.createTambahanForReservasi(reservasi, request.getTambahanQuantity());
         Integer harga = getReservasiCost(reservasi.getId());
         reservasi.setHarga(harga);
@@ -82,16 +78,6 @@ public class ReservasiServiceImpl implements ReservasiService {
 
     private boolean isReservasiDoesNotExist(Integer id) {
         return reservasiRepository.findById(id).isEmpty();
-    }
-
-    public void createLapanganReservasi(Reservasi reservasi, ReservasiRequest request){
-        LapanganReservasi lapanganReservasi = LapanganReservasi.builder()
-                .idLapangan(1)
-                .idReservasi(reservasi.getId())
-                .jamMulai(request.getJamMulai())
-                .jamBerakhir(request.getJamBerakhir())
-                .build();
-        lapanganReservasiRepository.save(lapanganReservasi);
     }
 
     public Integer getReservasiCost(Integer id){
