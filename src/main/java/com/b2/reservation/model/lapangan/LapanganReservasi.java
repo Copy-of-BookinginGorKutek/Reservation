@@ -19,7 +19,7 @@ public class LapanganReservasi {
     private Integer id;
     private Integer idLapangan;
     private Integer idReservasi;
-    private LocalTime jam_mulai;
-    private LocalTime jam_berakhir;
+    private LocalTime jamMulai;
+    private LocalTime jamBerakhir;
 
 }

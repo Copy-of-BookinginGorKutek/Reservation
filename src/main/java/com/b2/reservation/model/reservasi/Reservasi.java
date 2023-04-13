@@ -22,6 +22,8 @@ public class Reservasi {
     @Enumerated(EnumType.STRING)
     private StatusPembayaran statusPembayaran;
     private String buktiTransfer;
+    private Integer harga;
+
 
     @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
     private List<Tambahan> tambahanList;
