@@ -5,12 +5,14 @@ import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.repository.ReservasiRepository;
 import com.b2.reservation.repository.TambahanRepository;
 import com.b2.reservation.request.ReservasiRequest;
-import com.b2.reservation.request.UpdateReservasiRequest;
+import com.b2.reservation.util.LapanganDipakai;
 import com.b2.reservation.util.TambahanUtils;
 import com.b2.reservation.model.lapangan.Lapangan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,7 +50,7 @@ public class ReservasiServiceImpl implements ReservasiService {
     }
 
     @Override
-    public Reservasi update(Integer id, UpdateReservasiRequest request) {
+    public Reservasi update(Integer id, ReservasiRequest request) {
         if (isReservasiDoesNotExist(id)) {
             throw new ReservasiDoesNotExistException(id);
         }
@@ -86,5 +88,16 @@ public class ReservasiServiceImpl implements ReservasiService {
         }
         Reservasi reservasi = this.reservasiRepository.findById(id).orElseThrow();
         return Lapangan.getCost() + tambahanUtils.calculateTambahanCost(reservasi);
+    }
+
+    public void validateReservasi(ReservasiRequest request){
+        List<Reservasi> reservasiList = reservasiRepository.findAll();
+        List<LapanganDipakai> lapanganDipakaiList = new ArrayList<>();
+        for(Reservasi reservasi:reservasiList){
+            Lapangan lapangan = reservasi.getLapangan();
+            LocalDateTime waktuMulai = reservasi.getWaktuMulai();
+            LocalDateTime waktuBerakhir = reservasi.getWaktuBerakhir();
+            lapanganDipakaiList.add(new LapanganDipakai(lapangan, waktuMulai, waktuBerakhir));
+        }
     }
 }
