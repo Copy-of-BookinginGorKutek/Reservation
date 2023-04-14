@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Data
@@ -17,7 +17,7 @@ public class ReservasiRequest {
     private String emailUser;
     private StatusPembayaran statusPembayaran;
     private String buktiTransfer;
-    private LocalTime jamMulai;
-    private LocalTime jamBerakhir;
+    private LocalDateTime waktuMulai;
+    private LocalDateTime waktuBerakhir;
     private Map<String, Integer> tambahanQuantity;
 }

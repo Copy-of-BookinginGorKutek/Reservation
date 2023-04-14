@@ -2,7 +2,6 @@ package com.b2.reservation.controller;
 
 import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.request.ReservasiRequest;
-import com.b2.reservation.request.UpdateReservasiRequest;
 import com.b2.reservation.service.ReservasiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +34,14 @@ public class ReservationController {
 
     @PutMapping("/stat-update/{id}")
     public ResponseEntity<Reservasi> updateReservation(@PathVariable Integer id,
-                                                       @RequestBody UpdateReservasiRequest request) {
+                                                       @RequestBody ReservasiRequest request) {
         Reservasi response = reservasiService.update(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/bukti-bayar/{id}")
     public ResponseEntity<Reservasi> putProofOfPayment(@PathVariable Integer id,
-                                                       @RequestBody UpdateReservasiRequest request) {
+                                                       @RequestBody ReservasiRequest request) {
         Reservasi response = reservasiService.update(id, request);
         return ResponseEntity.ok(response);
     }
