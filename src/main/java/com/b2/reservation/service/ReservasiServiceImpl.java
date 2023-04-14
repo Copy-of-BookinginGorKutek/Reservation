@@ -90,7 +90,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         return Lapangan.getCost() + tambahanUtils.calculateTambahanCost(reservasi);
     }
 
-    public void validateReservasi(ReservasiRequest request){
+    public List<LapanganDipakai> createLapanganDipakaiList(){
         List<Reservasi> reservasiList = reservasiRepository.findAll();
         List<LapanganDipakai> lapanganDipakaiList = new ArrayList<>();
         for(Reservasi reservasi:reservasiList){
@@ -99,5 +99,6 @@ public class ReservasiServiceImpl implements ReservasiService {
             LocalDateTime waktuBerakhir = reservasi.getWaktuBerakhir();
             lapanganDipakaiList.add(new LapanganDipakai(lapangan, waktuMulai, waktuBerakhir));
         }
+        return lapanganDipakaiList;
     }
 }
