@@ -25,7 +25,6 @@ public class ReservasiServiceImpl implements ReservasiService {
     public List<Reservasi> findAll() {
         return reservasiRepository.findAll();
     }
-
     @Override
     public Reservasi findById(Integer id) {
         Reservasi reservasi = reservasiRepository.findById(id).orElse(null);
