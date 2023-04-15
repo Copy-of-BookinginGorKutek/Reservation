@@ -23,12 +23,8 @@ public class ReservasiServiceImpl implements ReservasiService {
     private final TambahanRepository tambahanRepository;
     @Override
     public List<Reservasi> findAll() {
-        List<Reservasi> reservasiIterator= reservasiRepository.findAll();
-        List<Reservasi> allReservasi = new ArrayList<>();
-        reservasiIterator.forEach(allReservasi::add);
-        return allReservasi;
+        return reservasiRepository.findAll();
     }
-
     @Override
     public Reservasi findById(Integer id) {
         Reservasi reservasi = reservasiRepository.findById(id).orElse(null);
