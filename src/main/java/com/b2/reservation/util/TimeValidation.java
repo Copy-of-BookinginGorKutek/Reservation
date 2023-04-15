@@ -23,13 +23,11 @@ public class TimeValidation {
 
     public Lapangan findEmptyLapangan(LocalDateTime start, LocalDateTime end){
         for (LapanganDipakai lapanganDipakai: lapanganDipakaiList){
-            System.out.println(lapanganDipakai.getWaktuMulai().toString() + " ke " + lapanganDipakai.getWaktuSelesai().toString() + " di " + lapanganDipakai.getLapangan().getId());
             if (((start.isAfter(lapanganDipakai.getWaktuMulai()) || (start.isEqual(lapanganDipakai.getWaktuMulai()))) &&
                     ((end.isBefore(lapanganDipakai.getWaktuSelesai())) || (end.isEqual(lapanganDipakai.getWaktuSelesai())))) ||
                     (start.isBefore(lapanganDipakai.getWaktuMulai()) && end.isAfter(lapanganDipakai.getWaktuMulai())) ||
                     (start.isBefore(lapanganDipakai.getWaktuSelesai()) && end.isAfter(lapanganDipakai.getWaktuSelesai()))){
                 mapLapanganDipakai.replace(lapanganDipakai.getLapangan(), true);
-                System.out.println("Lapangan " + lapanganDipakai.getLapangan().getId() + " dipakai");
             }
         }
 
@@ -38,8 +36,7 @@ public class TimeValidation {
                 return entry.getKey();
             }
         }
-        System.out.println(mapLapanganDipakai);
-        Lapangan lap = new Lapangan();
+        var lap = new Lapangan();
         lap.setId(-1);
         return lap;
     }
