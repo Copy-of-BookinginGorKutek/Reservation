@@ -1,6 +1,5 @@
 package com.b2.reservation.model.lapangan;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
