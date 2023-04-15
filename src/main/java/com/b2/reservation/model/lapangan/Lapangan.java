@@ -1,7 +1,6 @@
 package com.b2.reservation.model.lapangan;
 
 import com.b2.reservation.model.reservasi.Reservasi;
-import com.b2.reservation.model.reservasi.Tambahan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
