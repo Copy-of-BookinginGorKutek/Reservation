@@ -21,6 +21,8 @@ public class ApplicationConfiguration {
         http
                 .csrf()
                 .disable()
+                .cors()
+                .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/css/**", "/js/**", "/img/**")
                 .permitAll()
