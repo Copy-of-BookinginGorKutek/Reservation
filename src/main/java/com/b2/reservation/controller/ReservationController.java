@@ -32,7 +32,7 @@ public class ReservationController {
 
     @GetMapping("/get-self")
     @PreAuthorize("hasAuthority('ROLE_USER')")
-    public ResponseEntity<List<Reservasi>> getAllReservationByUser(@RequestParam String emailUser) {
+    public ResponseEntity<List<Reservasi>> getAllReservationByUser(@RequestParam(value = "emailUser") String emailUser) {
         List<Reservasi> response= reservasiService.findAllByEmailUser(emailUser);
         return ResponseEntity.ok(response);
     }
