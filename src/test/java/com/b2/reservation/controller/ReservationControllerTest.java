@@ -5,6 +5,7 @@ import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.model.reservasi.StatusPembayaran;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.service.ReservasiServiceImpl;
+import com.b2.reservation.util.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,13 @@ class ReservationControllerTest {
 
     @MockBean
     private ReservasiServiceImpl service;
+
+    @MockBean
+    private JwtUtils utils;
     Reservasi reservasi;
     Object bodyContent;
+
+    String email;
 
     @BeforeEach
     void setUp() {
@@ -51,6 +57,8 @@ class ReservationControllerTest {
             public final StatusPembayaran statusPembayaran= StatusPembayaran.MENUNGGU_PEMBAYARAN;
 
         };
+
+        email =  "test@email.com";
 
     }
 
@@ -87,15 +95,14 @@ class ReservationControllerTest {
     }
 
 
-   @Test
+    @Test
     @WithMockUser(roles = "USER")
     void testGetReservationByEmail() throws Exception {
         when(service.findAllByEmailUser(any(String.class))).thenReturn(List.of(reservasi));
 
         mvc.perform(get("/reservation/get-self")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(Util.mapToJson(bodyContent))
-                        .with(csrf()))
+                        .param("emailUser", email)
+                        )
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("getAllReservationByUser"))
                 .andExpect(jsonPath("$[0].id").value(String.valueOf(reservasi.getId())))

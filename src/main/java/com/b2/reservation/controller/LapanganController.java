@@ -3,7 +3,6 @@ package com.b2.reservation.controller;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
 import com.b2.reservation.request.OperasionalLapanganRequest;
-import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.service.LapanganService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

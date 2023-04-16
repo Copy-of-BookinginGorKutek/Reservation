@@ -1,10 +1,7 @@
 package com.b2.reservation.controller;
 import com.b2.reservation.Util;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
-import com.b2.reservation.model.reservasi.Reservasi;
-import com.b2.reservation.model.reservasi.StatusPembayaran;
 import com.b2.reservation.request.OperasionalLapanganRequest;
-import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.service.LapanganServiceImpl;
 import com.b2.reservation.util.JwtUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,14 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.b2.reservation.model.lapangan.Lapangan;
 
 import java.util.Date;
-import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.mockito.ArgumentMatchers.any;
