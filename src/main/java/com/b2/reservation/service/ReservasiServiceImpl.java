@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +37,15 @@ public class ReservasiServiceImpl implements ReservasiService {
 
     @Override
     public Reservasi create(ReservasiRequest request) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime waktuMulai = LocalDateTime.parse(request.getWaktuMulai(), formatter);
+        LocalDateTime waktuBerakhir = LocalDateTime.parse(request.getWaktuBerakhir(), formatter);
         Reservasi reservasi = Reservasi.builder()
                 .emailUser(request.getEmailUser())
                 .statusPembayaran(request.getStatusPembayaran())
                 .buktiTransfer(request.getBuktiTransfer())
+                .waktuMulai(waktuMulai)
+                .waktuBerakhir(waktuBerakhir)
                 .build();
         reservasi = reservasiRepository.save(reservasi);
         tambahanUtils.createTambahanForReservasi(reservasi, request.getTambahanQuantity());
