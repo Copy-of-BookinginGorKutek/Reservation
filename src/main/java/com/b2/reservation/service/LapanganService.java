@@ -1,0 +1,12 @@
+package com.b2.reservation.service;
+
+import com.b2.reservation.model.lapangan.Lapangan;
+import com.b2.reservation.model.lapangan.OperasionalLapangan;
+import com.b2.reservation.request.OperasionalLapanganRequest;
+import org.springframework.stereotype.Service;
+
+@Service
+public interface LapanganService {
+    Lapangan create();
+    OperasionalLapangan createCloseDate(OperasionalLapanganRequest request);
+}
