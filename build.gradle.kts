@@ -1,6 +1,6 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.0.5"
+	id("org.springframework.boot") version "3.0.4"
 	id("io.spring.dependency-management") version "1.1.0"
 	id("org.sonarqube") version "3.0"
 	jacoco
@@ -20,6 +20,8 @@ repositories {
 	mavenCentral()
 }
 
+extra["springCloudVersion"] = "2022.0.0"
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -37,6 +39,13 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("com.google.guava:guava:31.1-jre")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+	}
 }
 
 tasks.withType<Test> {
