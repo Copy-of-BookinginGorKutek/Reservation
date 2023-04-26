@@ -22,8 +22,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(baseException, status);
     }
 
-    @ExceptionHandler(value = {LapanganDoesNotExistException.class, ReservasiDoesNotExistException.class})
-    public ResponseEntity<Object> lapanganAndReservasiDoesNotExist(Exception exception){
+    @ExceptionHandler(value = {LapanganDoesNotExistException.class, ReservasiDoesNotExistException.class, KuponDoesNotExistException.class})
+    public ResponseEntity<Object> lapanganAndReservasiAndKuponDoesNotExist(Exception exception){
         HttpStatus status = HttpStatus.NOT_FOUND;
         ErrorTemplate baseException = new ErrorTemplate(
                 exception.getMessage(),
