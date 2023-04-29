@@ -1,5 +1,6 @@
 package com.b2.reservation.model.reservasi;
 
+import com.b2.reservation.model.kupon.Kupon;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,7 +37,9 @@ public class Reservasi {
     private LocalDateTime waktuMulai;
     private LocalDateTime waktuBerakhir;
 
-
+    @ManyToOne
+    @JoinColumn(name = "_kupon_id")
+    private Kupon kupon;
     @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
     private List<Tambahan> tambahanList;
 
