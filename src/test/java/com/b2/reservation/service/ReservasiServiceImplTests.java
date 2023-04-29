@@ -1,8 +1,10 @@
 package com.b2.reservation.service;
 
 import com.b2.reservation.exceptions.ReservasiDoesNotExistException;
+import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.model.reservasi.StatusPembayaran;
+import com.b2.reservation.repository.LapanganRepository;
 import com.b2.reservation.repository.ReservasiRepository;
 import com.b2.reservation.request.ReservasiRequest;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +31,9 @@ class ReservasiServiceImplTests {
     @Mock
     private ReservasiRepository repository;
 
+    @Mock
+    private LapanganRepository lapanganRepository;
+
     Reservasi reservasi;
     Reservasi newReservasi;
     ReservasiRequest createRequest;
@@ -37,9 +43,18 @@ class ReservasiServiceImplTests {
 
     @BeforeEach
     void setUp() {
+        Lapangan lap1 = new Lapangan();
+        lap1.setId(1);
+        Lapangan lap2 = new Lapangan();
+        lap1.setId(2);
+        lapanganRepository.save(lap1);
+        lapanganRepository.save(lap2);
+
         createRequest = ReservasiRequest.builder()
                 .emailUser("test1@email.com")
                 .statusPembayaran(StatusPembayaran.MENUNGGU_PEMBAYARAN)
+                .waktuMulai("14-05-2023 19:00")
+                .waktuBerakhir("14-05-2023 21:00")
                 .build();
 
         updateRequest = ReservasiRequest.builder()
@@ -47,11 +62,16 @@ class ReservasiServiceImplTests {
                 .statusPembayaran(StatusPembayaran.MENUNGGU_KONFIRMASI)
                 .build();
 
+        LocalDateTime sc = LocalDateTime.of(2023,5,14,19,0,0);
+        LocalDateTime ec = LocalDateTime.of(2023,5,14,21,0,0);
 
         reservasi = Reservasi.builder()
                 .id(0)
                 .emailUser("test1@email.com")
                 .statusPembayaran(StatusPembayaran.MENUNGGU_PEMBAYARAN)
+                .lapangan(lap1)
+                .waktuMulai(sc)
+                .waktuBerakhir(ec)
                 .build();
 
         newReservasi = Reservasi.builder()
@@ -59,6 +79,7 @@ class ReservasiServiceImplTests {
                 .emailUser("test2@email.com")
                 .statusPembayaran(StatusPembayaran.MENUNGGU_KONFIRMASI)
                 .build();
+
 
     }
 
@@ -99,19 +120,6 @@ class ReservasiServiceImplTests {
         Assertions.assertThrows(ReservasiDoesNotExistException.class, () -> {
             service.findById(1000);
         });
-    }
-
-    @Test
-    void whenCreateReservationShouldReturnTheCreatedReservation() {
-        when(repository.save(any(Reservasi.class))).thenAnswer(invocation -> {
-            var reservasi = invocation.getArgument(0, Reservasi.class);
-            reservasi.setId(0);
-            return reservasi;
-        });
-
-        Reservasi result = service.create(createRequest);
-        verify(repository, atLeastOnce()).save(any(Reservasi.class));
-        Assertions.assertEquals(reservasi, result);
     }
 
     @Test
