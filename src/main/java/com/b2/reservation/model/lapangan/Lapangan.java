@@ -21,9 +21,6 @@ public class Lapangan {
     @GeneratedValue
     private Integer id;
 
-    @OneToMany(mappedBy = "lapangan", cascade = CascadeType.ALL)
-    private List<Reservasi> reservasiList;
-
     public static Integer getCost(){ return cost; }
     public static void setCost(Integer harga){ cost = harga; }
 
