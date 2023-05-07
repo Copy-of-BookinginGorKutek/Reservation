@@ -60,7 +60,7 @@ public class ReservasiServiceImpl implements ReservasiService {
                 .buktiTransfer(request.getBuktiTransfer())
                 .waktuMulai(waktuMulai)
                 .waktuBerakhir(waktuBerakhir)
-                .lapangan(lapangan)
+                .idLapangan(lapangan.getId())
                 .build();
         reservasi = reservasiRepository.save(reservasi);
         tambahanUtils.createTambahanForReservasi(reservasi, request.getTambahanQuantity());
@@ -81,6 +81,9 @@ public class ReservasiServiceImpl implements ReservasiService {
                 .buktiTransfer(request.getBuktiTransfer())
                 .statusPembayaran(request.getStatusPembayaran())
                 .harga(reservasi.getHarga())
+                .waktuMulai(reservasi.getWaktuMulai())
+                .waktuBerakhir(reservasi.getWaktuBerakhir())
+                .idLapangan(reservasi.getIdLapangan())
                 .build();
         return this.reservasiRepository.save(newReservasi);
     }
@@ -102,7 +105,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         return reservasiRepository.findById(id).isEmpty();
     }
 
-    public Integer getReservasiCost(Integer id){
+    private Integer getReservasiCost(Integer id){
         if (isReservasiDoesNotExist(id)){
             throw new ReservasiDoesNotExistException(id);
         }
@@ -110,11 +113,11 @@ public class ReservasiServiceImpl implements ReservasiService {
         return Lapangan.getCost() + tambahanUtils.calculateTambahanCost(reservasi);
     }
 
-    public List<LapanganDipakai> createLapanganDipakaiList(){
+    private List<LapanganDipakai> createLapanganDipakaiList(){
         List<Reservasi> reservasiList = reservasiRepository.findAll();
         List<LapanganDipakai> lapanganDipakaiList = new ArrayList<>();
         for(Reservasi reservasi:reservasiList){
-            Lapangan lapangan = reservasi.getLapangan();
+            Lapangan lapangan = lapanganRepository.findById(reservasi.getIdLapangan()).orElseThrow();
             LocalDateTime waktuMulai = reservasi.getWaktuMulai();
             LocalDateTime waktuBerakhir = reservasi.getWaktuBerakhir();
             lapanganDipakaiList.add(new LapanganDipakai(lapangan, waktuMulai, waktuBerakhir));

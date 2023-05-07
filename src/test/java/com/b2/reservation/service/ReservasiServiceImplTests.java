@@ -46,7 +46,7 @@ class ReservasiServiceImplTests {
         Lapangan lap1 = new Lapangan();
         lap1.setId(1);
         Lapangan lap2 = new Lapangan();
-        lap1.setId(2);
+        lap2.setId(2);
         lapanganRepository.save(lap1);
         lapanganRepository.save(lap2);
 
@@ -69,7 +69,7 @@ class ReservasiServiceImplTests {
                 .id(0)
                 .emailUser("test1@email.com")
                 .statusPembayaran(StatusPembayaran.MENUNGGU_PEMBAYARAN)
-                .lapangan(lap1)
+                .idLapangan(lap1.getId())
                 .waktuMulai(sc)
                 .waktuBerakhir(ec)
                 .build();
@@ -77,6 +77,9 @@ class ReservasiServiceImplTests {
         newReservasi = Reservasi.builder()
                 .id(0)
                 .emailUser("test2@email.com")
+                .idLapangan(lap1.getId())
+                .waktuMulai(sc)
+                .waktuBerakhir(ec)
                 .statusPembayaran(StatusPembayaran.MENUNGGU_KONFIRMASI)
                 .build();
 
