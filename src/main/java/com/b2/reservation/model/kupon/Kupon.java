@@ -20,6 +20,6 @@ public class Kupon {
     private Integer id;
     private String name;
     private Double percentageDiscounted;
-    @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "kupon", cascade = CascadeType.ALL)
     private List<Reservasi> reservationsUseCoupon;
 }
