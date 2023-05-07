@@ -11,5 +11,5 @@ ENV JDBC_DATABASE_USERNAME ${JDBC_DATABASE_USERNAME}
 
 WORKDIR /app
 COPY ./build/libs/reservation-0.0.1-SNAPSHOT.jar /app
-EXPOSE 8080
+EXPOSE 8082
 CMD ["java","-jar","reservation-0.0.1-SNAPSHOT.jar"]
