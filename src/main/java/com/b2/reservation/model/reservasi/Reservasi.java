@@ -31,9 +31,7 @@ public class Reservasi {
     private StatusPembayaran statusPembayaran;
     private String buktiTransfer;
     private Integer harga;
-    @ManyToOne
-    @JoinColumn(name = "_lapangan_id")
-    private Lapangan lapangan;
+    private Integer idLapangan;
     private LocalDateTime waktuMulai;
     private LocalDateTime waktuBerakhir;
 
