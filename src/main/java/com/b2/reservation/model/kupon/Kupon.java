@@ -1,4 +1,4 @@
-package com.b2.reservation.model.lapangan;
+package com.b2.reservation.model.kupon;
 
 import com.b2.reservation.model.reservasi.Reservasi;
 import jakarta.persistence.*;
@@ -14,14 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_lapangan")
-public class Lapangan {
-    private static Integer cost = 50000;
+public class Kupon {
     @Id
     @GeneratedValue
     private Integer id;
-
-    public static Integer getCost(){ return cost; }
-    public static void setCost(Integer harga){ cost = harga; }
-
+    private String name;
+    private Double percentageDiscounted;
+    @OneToMany(mappedBy = "kupon", cascade = CascadeType.ALL)
+    private List<Reservasi> reservationsUseCoupon;
 }
