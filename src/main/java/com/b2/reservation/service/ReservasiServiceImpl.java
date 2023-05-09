@@ -113,7 +113,8 @@ public class ReservasiServiceImpl implements ReservasiService {
         return Lapangan.getCost() + tambahanUtils.calculateTambahanCost(reservasi);
     }
 
-    private List<LapanganDipakai> createLapanganDipakaiList(){
+    @Override
+    public List<LapanganDipakai> createLapanganDipakaiList(){
         List<Reservasi> reservasiList = reservasiRepository.findAll();
         List<LapanganDipakai> lapanganDipakaiList = new ArrayList<>();
         for(Reservasi reservasi:reservasiList){
