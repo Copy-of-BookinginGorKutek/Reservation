@@ -41,17 +41,4 @@ public class Reservasi {
     @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
     private List<Tambahan> tambahanList;
 
-    public static String toJson(List<Reservasi> listReservasi) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        Map<Integer, Object> map = new HashMap<>();
-
-        for (int i = 0; i < listReservasi.size(); i++) {
-            Reservasi reservasi = listReservasi.get(i);
-            Map<String, Object> json = mapper.convertValue(reservasi, Map.class);
-            mapper.convertValue(reservasi, Map.class);
-            map.put(reservasi.getId(), json);
-        }
-
-        return mapper.writeValueAsString(map);
-    }
 }
