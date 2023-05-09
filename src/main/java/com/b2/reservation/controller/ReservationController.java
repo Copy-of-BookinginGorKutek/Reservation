@@ -1,8 +1,10 @@
 package com.b2.reservation.controller;
 
+import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.service.ReservasiService;
+import com.b2.reservation.util.LapanganDipakai;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,6 +60,13 @@ public class ReservationController {
     public ResponseEntity<String> deleteReservation(@PathVariable Integer id) {
         reservasiService.delete(id);
         return ResponseEntity.ok(String.format("Deleted reservation with id %d", id));
+    }
+
+    @GetMapping("/get-lapangan-dipakai")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<List<LapanganDipakai>> getLapanganDipakai() {
+        List<LapanganDipakai> response = reservasiService.createLapanganDipakaiList();
+        return ResponseEntity.ok(response);
     }
 
 }

@@ -1,13 +1,10 @@
 package com.b2.reservation.model.lapangan;
 
-import com.b2.reservation.model.reservasi.Reservasi;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder
