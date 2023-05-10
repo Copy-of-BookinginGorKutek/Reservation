@@ -125,4 +125,23 @@ public class ReservasiServiceImpl implements ReservasiService {
         }
         return lapanganDipakaiList;
     }
+
+    @Override
+    public Reservasi addPaymentProof(Integer id, String paymentProof) {
+        Reservasi before = findById(id);
+
+        Reservasi after = Reservasi.builder()
+                .id(id)
+                .emailUser(before.getEmailUser())
+                .statusPembayaran(before.getStatusPembayaran())
+                .buktiTransfer(paymentProof)
+                .harga(before.getHarga())
+                .idLapangan(before.getIdLapangan())
+                .waktuMulai(before.getWaktuMulai())
+                .waktuBerakhir(before.getWaktuBerakhir())
+                .build();
+
+        return reservasiRepository.save(after);
+    }
+
 }
