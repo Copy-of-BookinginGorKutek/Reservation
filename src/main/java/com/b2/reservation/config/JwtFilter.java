@@ -78,7 +78,7 @@ public class JwtFilter extends OncePerRequestFilter {
         httpHeaders.setBearerAuth(jwtToken);
         HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
         try {
-            restTemplate.exchange("http://auth/authorization/user-checking", HttpMethod.GET, httpEntity, Object.class);
+            restTemplate.exchange("http://34.142.212.224:100/authorization/user-checking", HttpMethod.GET, httpEntity, Object.class);
             return true;
         }catch(Exception e){
             return false;
