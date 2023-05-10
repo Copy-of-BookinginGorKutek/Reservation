@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.b2.reservation.model.lapangan.Lapangan;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 
@@ -29,6 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class LapanganControllerTest {
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    private RestTemplate restTemplate;
 
     @MockBean
     private LapanganServiceImpl service;

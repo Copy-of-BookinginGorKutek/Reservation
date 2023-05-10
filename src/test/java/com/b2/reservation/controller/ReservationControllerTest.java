@@ -15,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -36,6 +37,9 @@ class ReservationControllerTest {
 
     @MockBean
     private ReservasiServiceImpl service;
+
+    @MockBean
+    private RestTemplate restTemplate;
 
     @MockBean
     private JwtUtils utils;
@@ -124,23 +128,6 @@ class ReservationControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "USER")
-    void testUpdateReservationUser() throws Exception {
-        when(service.update(any(Integer.class), any(ReservasiRequest.class))).thenReturn(reservasi);
-
-        mvc.perform(put("/reservation/bukti-bayar/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(Util.mapToJson(bodyContent))
-                        .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(handler().methodName("putProofOfPayment"))
-                .andExpect(jsonPath("$.id").value(reservasi.getId()))
-                .andExpect(jsonPath("$.emailUser").value(reservasi.getEmailUser()));
-
-        verify(service, atLeastOnce()).update(any(Integer.class), any(ReservasiRequest.class));
-    }
-
-    @Test
     @WithMockUser(roles = "ADMIN")
     void testUpdateReservationAdmin() throws Exception {
         when(service.update(any(Integer.class), any(ReservasiRequest.class))).thenReturn(reservasi);
@@ -156,5 +143,20 @@ class ReservationControllerTest {
 
         verify(service, atLeastOnce()).update(any(Integer.class), any(ReservasiRequest.class));
     }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    void testUpdatePaymentProof() throws Exception {
+        String linkExample = "https://drive.google.com/file/d/1tSy_MqFKbe8VoFjyy-QqAsyZh9UvAv39/view?usp=share_link";
+
+        mvc.perform(put("/reservation/bukti-bayar/1")
+                        .content(linkExample)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("putProofOfPayment"));
+
+        verify(service, atLeastOnce()).addPaymentProof(any(Integer.class), any(String.class));
+    }
+
 }
 

@@ -1,6 +1,5 @@
 package com.b2.reservation.controller;
 
-import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.service.ReservasiService;
@@ -50,8 +49,8 @@ public class ReservationController {
     @PutMapping("/bukti-bayar/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Reservasi> putProofOfPayment(@PathVariable Integer id,
-                                                       @RequestBody ReservasiRequest request) {
-        Reservasi response = reservasiService.update(id, request);
+                                                       @RequestBody String buktiBayar) {
+        Reservasi response = reservasiService.addPaymentProof(id, buktiBayar);
         return ResponseEntity.ok(response);
     }
 
