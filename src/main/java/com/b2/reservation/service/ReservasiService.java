@@ -16,4 +16,5 @@ public interface ReservasiService {
     List<Reservasi> findAllByEmailUser(String email);
     void delete(Integer id);
     List<LapanganDipakai> createLapanganDipakaiList();
+    Reservasi addPaymentProof(Integer id, String paymentProof);
 }
