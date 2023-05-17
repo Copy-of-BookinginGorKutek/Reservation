@@ -29,7 +29,7 @@ public class KuponController {
         return ResponseEntity.ok(listAllKupon);
     }
 
-    @DeleteMapping("/delete-kupon")
+    @DeleteMapping("/delete-kupon/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteKuponById(@PathVariable Integer id){
         kuponService.delete(id);
