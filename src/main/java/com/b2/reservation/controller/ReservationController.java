@@ -68,4 +68,10 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/get-reservasi-by-date/{date}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<List<Reservasi>> getReservasiByDate(@PathVariable String date){
+        List<Reservasi> response = reservasiService.findReservasiByDate(date);
+        return ResponseEntity.ok(response);
+    }
 }
