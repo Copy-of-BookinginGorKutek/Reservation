@@ -23,9 +23,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -123,8 +121,16 @@ public class ReservasiServiceImpl implements ReservasiService {
 
     @Override
     public List<LapanganDipakai> createLapanganDipakaiList(){
+        List<LapanganDipakai> lapanganDipakaiByReservasi = getLapanganDipakaiByReservasi();
+        List<LapanganDipakai> lapanganDipakaiByOperasionalLapangan = getLapanganDipakaiByOperasionalLapangan();
+        List<LapanganDipakai> result = new ArrayList<>();
+        result.addAll(lapanganDipakaiByReservasi);
+        result.addAll(lapanganDipakaiByOperasionalLapangan);
+        return result;
+    }
+
+    private List<LapanganDipakai> getLapanganDipakaiByReservasi(){
         List<Reservasi> reservasiList = reservasiRepository.findAll();
-        List<OperasionalLapangan> operasionalLapanganList = operasionalLapanganRepository.findAll();
         List<LapanganDipakai> lapanganDipakaiList = new ArrayList<>();
         for(Reservasi reservasi:reservasiList){
             Lapangan lapangan = lapanganRepository.findById(reservasi.getIdLapangan()).orElseThrow();
@@ -132,24 +138,33 @@ public class ReservasiServiceImpl implements ReservasiService {
             LocalDateTime waktuBerakhir = reservasi.getWaktuBerakhir();
             lapanganDipakaiList.add(new LapanganDipakai(lapangan, waktuMulai, waktuBerakhir));
         }
+        return lapanganDipakaiList;
+    }
+
+    private List<LapanganDipakai> getLapanganDipakaiByOperasionalLapangan(){
+        List<OperasionalLapangan> operasionalLapanganList = operasionalLapanganRepository.findAll();
+        List<LapanganDipakai> lapanganDipakaiList = new ArrayList<>();
         for(OperasionalLapangan operasionalLapangan: operasionalLapanganList){
             Lapangan lapangan = lapanganRepository.findById(operasionalLapangan.getIdLapangan()).orElseThrow();
             Date fullDate = operasionalLapangan.getTanggalLibur();
-            Integer year = fullDate.getYear();
-            String yearString = year.toString();
-            Integer month = fullDate.getMonth();
-            String monthString = month < 10? "0" + month: month.toString();
-            Integer date = fullDate.getDate();
-            String dateString = date < 10? "0" + date: date.toString();
-            String fullDateAsStringStart = yearString + "-" + monthString + "-" + dateString + " 00:00";
-            String fullDateAsStringEnd = yearString + "-" + monthString + "-" + dateString + " 23:59";
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime fullDateStart = LocalDateTime.parse(fullDateAsStringStart, formatter);
-            LocalDateTime fullDateEnd = LocalDateTime.parse(fullDateAsStringEnd, formatter);
+            LocalDateTime fullDateStart = parseDateToLocalDateTime(fullDate, "00:00");
+            LocalDateTime fullDateEnd = parseDateToLocalDateTime(fullDate, "23:59");
             lapanganDipakaiList.add(new LapanganDipakai(lapangan, fullDateStart, fullDateEnd));
         }
         return lapanganDipakaiList;
+    }
+
+    private LocalDateTime parseDateToLocalDateTime(Date date, String timeAsString){
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        Integer year = calendar.get(Calendar.YEAR);
+        String monthString = (month < 10)? "0" + month : Integer.toString(month);
+        String dayString = (day < 10)? "0" + day : Integer.toString(day);
+        String fullDateAsString = year + "-" + monthString + "-" + dayString + " " + timeAsString;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return LocalDateTime.parse(fullDateAsString, formatter);
     }
 
     @Override
