@@ -14,6 +14,5 @@ public interface OperasionalLapanganRepository extends JpaRepository<Operasional
     List<OperasionalLapangan> findAll();
     @NonNull
     Optional<OperasionalLapangan> findById(@NonNull Integer id);
-    List<OperasionalLapangan> findAllByIdLapangan(Integer idLapangan);
-    List<OperasionalLapangan> findAllByTanggalLibur(Date tanggalLibur);
+    void deleteOperasionalLapanganById(@NonNull Integer id);
 }
