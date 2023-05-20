@@ -9,6 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
 @RestController
 @RequestMapping("/gor")
 @RequiredArgsConstructor
@@ -29,4 +34,27 @@ public class LapanganController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/closed-lapangan")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<List<OperasionalLapangan>> findClosedLapangan() {
+        List<OperasionalLapangan> response = lapanganService.getAllClosedLapangan();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/closed-lapangan/by-date/{dateAsString}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    public ResponseEntity<List<OperasionalLapangan>> findClosedLapanganByDate(@PathVariable String dateAsString) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = format.parse(dateAsString);
+        System.out.println(date);
+        List<OperasionalLapangan> response = lapanganService.getAllClosedLapanganByDate(date);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/closed-lapangan/delete/{id}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteOperasionalLapangan(@PathVariable Integer id){
+        lapanganService.deleteOperasionalLapangan(id);
+        return ResponseEntity.ok(String.format("Deleted operasional lapangan with ID " + id));
+    }
 }

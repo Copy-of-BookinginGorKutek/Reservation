@@ -1,6 +1,7 @@
 package com.b2.reservation.model.reservasi;
 
 import com.b2.reservation.model.kupon.Kupon;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class Reservasi {
     private LocalDateTime waktuBerakhir;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "_kupon_id")
     private Kupon kupon;
     @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)

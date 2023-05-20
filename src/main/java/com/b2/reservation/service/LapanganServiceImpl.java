@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,4 +46,22 @@ public class LapanganServiceImpl implements LapanganService{
         return lapanganRepository.findById(idLapangan).isEmpty();
     }
 
+    public List<OperasionalLapangan> getAllClosedLapanganByDate(Date date){
+        List<OperasionalLapangan> operasionalLapanganList = operasionalLapanganRepository.findAll();
+        List<OperasionalLapangan> closedLapanganByDateList = new ArrayList<>();
+        for (OperasionalLapangan operasionalLapangan: operasionalLapanganList){
+            if (operasionalLapangan.getTanggalLibur().getDate() == date.getDate() &&
+                    operasionalLapangan.getTanggalLibur().getYear() == date.getYear() &&
+                    operasionalLapangan.getTanggalLibur().getMonth() == date.getMonth()){
+                closedLapanganByDateList.add(operasionalLapangan);
+            }
+        }
+        return closedLapanganByDateList;
+    }
+    public List<OperasionalLapangan> getAllClosedLapangan() {
+        return operasionalLapanganRepository.findAll();
+    }
+    public void deleteOperasionalLapangan(Integer id){
+        operasionalLapanganRepository.deleteOperasionalLapanganById(id);
+    }
 }

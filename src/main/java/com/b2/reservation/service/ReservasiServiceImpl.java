@@ -191,22 +191,22 @@ public class ReservasiServiceImpl implements ReservasiService {
     }
 
     @Override
-    public List<Reservasi> findReservasiByDate(String dateAsString){
+    public List<Reservasi> findReservasiByDate(String dateAsString) throws ParseException {
         List<Reservasi> allReservasi = reservasiRepository.findAll();
         List<Reservasi> allReservasiByDate = new ArrayList<>();
-        try {
-            Date inputDate = parseStringToDate(dateAsString);
-            for (Reservasi reservasi: allReservasi){
-                LocalDateTime dateTime = reservasi.getWaktuMulai();
-                Instant instant = dateTime.toInstant(ZoneOffset.UTC);
-                Date date = Date.from(instant);
-                if (inputDate.equals(date)){
-                    allReservasiByDate.add(reservasi);
-                }
+        Date inputDate = parseStringToDate(dateAsString);
+        for (Reservasi reservasi: allReservasi){
+            if (compareDateAndDatetime(inputDate, reservasi.getWaktuMulai())){
+                allReservasiByDate.add(reservasi);
             }
-            return allReservasiByDate;
-        } catch (ParseException e) {
-            return allReservasiByDate;
         }
+        return allReservasiByDate;
+
+    }
+
+    private boolean compareDateAndDatetime(Date date, LocalDateTime datetime){
+        return (date.getYear() + 1900) == datetime.getYear() &&
+                (date.getMonth() + 1) == datetime.getMonthValue() &&
+                date.getDate() == datetime.getDayOfMonth();
     }
 }

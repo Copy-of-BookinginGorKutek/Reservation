@@ -5,6 +5,7 @@ import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.util.LapanganDipakai;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.List;
 
 @Service
@@ -17,5 +18,5 @@ public interface ReservasiService {
     void delete(Integer id);
     List<LapanganDipakai> createLapanganDipakaiList();
     Reservasi addPaymentProof(Integer id, String paymentProof);
-    List<Reservasi> findReservasiByDate(String date);
+    List<Reservasi> findReservasiByDate(String date) throws ParseException;
 }
