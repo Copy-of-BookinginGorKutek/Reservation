@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "_kupon")
 public class Kupon {
     @Id
     @GeneratedValue
