@@ -130,7 +130,7 @@ class ReservationControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void testUpdateReservationAdmin() throws Exception {
-        when(service.update(any(Integer.class), any(ReservasiRequest.class))).thenReturn(reservasi);
+        when(service.updateStatus(any(Integer.class), any(ReservasiRequest.class))).thenReturn(reservasi);
 
         mvc.perform(put("/reservation/stat-update/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +141,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.id").value(reservasi.getId()))
                 .andExpect(jsonPath("$.emailUser").value(reservasi.getEmailUser()));
 
-        verify(service, atLeastOnce()).update(any(Integer.class), any(ReservasiRequest.class));
+        verify(service, atLeastOnce()).updateStatus(any(Integer.class), any(ReservasiRequest.class));
     }
 
     @Test

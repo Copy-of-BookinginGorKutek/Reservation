@@ -13,7 +13,7 @@ public interface ReservasiService {
     List<Reservasi> findAll();
     Reservasi findById(Integer id);
     Reservasi create(ReservasiRequest request);
-    Reservasi update(Integer id, ReservasiRequest request);
+    Reservasi updateStatus(Integer id, ReservasiRequest request);
     List<Reservasi> findAllByEmailUser(String email);
     void delete(Integer id);
     List<LapanganDipakai> createLapanganDipakaiList();

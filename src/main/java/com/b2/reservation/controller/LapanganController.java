@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/gor")
 @RequiredArgsConstructor
+@CrossOrigin
 public class LapanganController {
     private final LapanganService lapanganService;
 
