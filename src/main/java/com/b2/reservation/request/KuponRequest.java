@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KuponRequest {
     private String name;
-    private Double percentageDiscounted;
+    private Integer percentageDiscounted;
 }

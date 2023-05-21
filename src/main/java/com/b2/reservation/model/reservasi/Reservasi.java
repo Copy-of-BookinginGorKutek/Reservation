@@ -29,11 +29,7 @@ public class Reservasi {
     private Integer idLapangan;
     private LocalDateTime waktuMulai;
     private LocalDateTime waktuBerakhir;
-
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "_kupon_id")
-    private Kupon kupon;
+    private Integer kuponId;
     @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
     private List<Tambahan> tambahanList;
 

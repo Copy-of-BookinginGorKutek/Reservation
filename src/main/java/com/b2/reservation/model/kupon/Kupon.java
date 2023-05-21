@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,7 +18,5 @@ public class Kupon {
     @GeneratedValue
     private Integer id;
     private String name;
-    private Double percentageDiscounted;
-    @OneToMany(mappedBy = "kupon", cascade = CascadeType.ALL)
-    private List<Reservasi> reservationsUseCoupon;
+    private Integer percentageDiscounted;
 }

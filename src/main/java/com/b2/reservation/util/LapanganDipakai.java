@@ -19,9 +19,4 @@ public class LapanganDipakai {
     @Setter
     @Getter
     private LocalDateTime waktuSelesai;
-
-    public double getHours(){
-        Duration duration = Duration.between(waktuMulai, waktuSelesai);
-        return (duration.getSeconds()+1)/3600.0;
-    }
 }

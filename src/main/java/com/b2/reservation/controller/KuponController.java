@@ -22,7 +22,7 @@ public class KuponController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get-kupon")
+    @GetMapping("/get-all-kupon")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<Kupon>> getAllKupon(){
         List<Kupon> listAllKupon = kuponService.findAll();

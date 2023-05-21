@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -34,6 +35,13 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/get/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public ResponseEntity<Reservasi> getReservationById(@PathVariable Integer id){
+        Reservasi reservasi = reservasiService.findById(id);
+        return ResponseEntity.ok(reservasi);
+    }
+
     @GetMapping("/get-self")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<Reservasi>> getAllReservationByUser(@RequestParam(value = "emailUser") String emailUser) {
@@ -45,7 +53,7 @@ public class ReservationController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Reservasi> updateReservation(@PathVariable Integer id,
                                                        @RequestBody ReservasiRequest request) {
-        Reservasi response = reservasiService.update(id, request);
+        Reservasi response = reservasiService.updateStatus(id, request);
         return ResponseEntity.ok(response);
     }
 
