@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import com.b2.reservation.model.lapangan.Lapangan;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 import java.util.List;
@@ -29,9 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = KuponController.class)
 @AutoConfigureMockMvc
-public class KuponControllerTest {
+class KuponControllerTest {
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    private RestTemplate restTemplate;
 
     @MockBean
     private KuponServiceImpl service;
