@@ -140,7 +140,7 @@ class ReservasiServiceImplTests {
         when(repository.save(any(Reservasi.class))).thenAnswer(invocation ->
                 invocation.getArgument(0, Reservasi.class));
 
-        Reservasi result = service.update(0, updateRequest);
+        Reservasi result = service.updateStatus(0, updateRequest);
         verify(repository, atLeastOnce()).save(any(Reservasi.class));
         Assertions.assertEquals(newReservasi1, result);
     }
@@ -150,7 +150,7 @@ class ReservasiServiceImplTests {
     void whenUpdateReservationAndNotFoundShouldThrowException() {
         when(repository.findById(any(Integer.class))).thenReturn(Optional.empty());
         Assertions.assertThrows(ReservasiDoesNotExistException.class, () -> {
-            service.update(0, createRequest);
+            service.updateStatus(0, createRequest);
         });
     }
 
