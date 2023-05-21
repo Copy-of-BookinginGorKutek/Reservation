@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/gor")
 @RequiredArgsConstructor
+@CrossOrigin
 public class KuponController {
     private final KuponService kuponService;
     @PostMapping("/create-kupon")
