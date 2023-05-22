@@ -1,6 +1,7 @@
 package com.b2.reservation.model.reservasi;
 
 import com.b2.reservation.model.kupon.Kupon;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,10 +29,7 @@ public class Reservasi {
     private Integer idLapangan;
     private LocalDateTime waktuMulai;
     private LocalDateTime waktuBerakhir;
-
-    @ManyToOne
-    @JoinColumn(name = "_kupon_id")
-    private Kupon kupon;
+    private Integer kuponId;
     @OneToMany(mappedBy = "reservasi", cascade = CascadeType.ALL)
     private List<Tambahan> tambahanList;
 

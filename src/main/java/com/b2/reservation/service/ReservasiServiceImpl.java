@@ -1,14 +1,14 @@
 package com.b2.reservation.service;
 
 import com.b2.reservation.exceptions.DateTimeIsNotValidException;
+import com.b2.reservation.exceptions.KuponDoesNotExistException;
 import com.b2.reservation.exceptions.LapanganIsNotAvailableException;
 import com.b2.reservation.exceptions.ReservasiDoesNotExistException;
+import com.b2.reservation.model.kupon.Kupon;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
 import com.b2.reservation.model.reservasi.Reservasi;
-import com.b2.reservation.repository.LapanganRepository;
-import com.b2.reservation.repository.OperasionalLapanganRepository;
-import com.b2.reservation.repository.ReservasiRepository;
-import com.b2.reservation.repository.TambahanRepository;
+import com.b2.reservation.model.reservasi.StatusPembayaran;
+import com.b2.reservation.repository.*;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.util.LapanganDipakai;
 import com.b2.reservation.util.TambahanUtils;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -31,6 +32,7 @@ public class ReservasiServiceImpl implements ReservasiService {
     private final ReservasiRepository reservasiRepository;
     private final TambahanUtils tambahanUtils;
     private final TambahanRepository tambahanRepository;
+    private final KuponRepository kuponRepository;
     private final LapanganRepository lapanganRepository;
     private final OperasionalLapanganRepository operasionalLapanganRepository;
     @Override
@@ -67,24 +69,37 @@ public class ReservasiServiceImpl implements ReservasiService {
                 .waktuMulai(waktuMulai)
                 .waktuBerakhir(waktuBerakhir)
                 .idLapangan(lapangan.getId())
+                .kuponId(request.getKuponId())
                 .build();
         reservasi = reservasiRepository.save(reservasi);
         tambahanUtils.createTambahanForReservasi(reservasi, request.getTambahanQuantity());
-        Integer harga = getReservasiCost(reservasi.getId());
-        reservasi.setHarga(harga);
+        Integer hargaBeforeKupon = getReservasiCost(reservasi.getId());
+        // Id kupon 0 = not used
+        if (request.getKuponId().equals(0)){
+            reservasi.setHarga(hargaBeforeKupon);
+        } else{
+            Integer hargaAkhir = calculatePriceAfterDiscount(request.getKuponId(), hargaBeforeKupon);
+            reservasi.setHarga(hargaAkhir);
+        }
         return this.reservasiRepository.save(reservasi);
     }
 
-    @Override
-    public Reservasi update(Integer id, ReservasiRequest request) {
-        if (isReservasiDoesNotExist(id)) {
-            throw new ReservasiDoesNotExistException(id);
+    private Integer calculatePriceAfterDiscount(Integer kuponId, Integer basePrice){
+        Optional<Kupon> kupon = kuponRepository.findById(kuponId);
+        if (kupon.isEmpty()){
+            throw new KuponDoesNotExistException(kuponId);
         }
-        Reservasi reservasi = this.reservasiRepository.findById(id).orElseThrow();
+        Integer discountPercentage = kupon.get().getPercentageDiscounted();
+        Integer discountAmount = basePrice * discountPercentage / 100;
+        return basePrice - discountAmount;
+    }
+    @Override
+    public Reservasi updateStatus(Integer id, ReservasiRequest request) {
+        Reservasi reservasi = findById(id);
         Reservasi newReservasi = Reservasi.builder()
                 .id(id)
-                .emailUser(request.getEmailUser())
-                .buktiTransfer(request.getBuktiTransfer())
+                .emailUser(reservasi.getEmailUser())
+                .buktiTransfer(reservasi.getBuktiTransfer())
                 .statusPembayaran(request.getStatusPembayaran())
                 .harga(reservasi.getHarga())
                 .waktuMulai(reservasi.getWaktuMulai())
@@ -116,7 +131,14 @@ public class ReservasiServiceImpl implements ReservasiService {
             throw new ReservasiDoesNotExistException(id);
         }
         Reservasi reservasi = this.reservasiRepository.findById(id).orElseThrow();
-        return Lapangan.getCost() + tambahanUtils.calculateTambahanCost(reservasi);
+        Double lapanganPrice = getHours(reservasi.getWaktuMulai(), reservasi.getWaktuBerakhir()) * Lapangan.getCost();
+        System.out.println(lapanganPrice);
+        return Math.toIntExact(Math.round(lapanganPrice) + tambahanUtils.calculateTambahanCost(reservasi));
+    }
+
+    private double getHours(LocalDateTime waktuMulai, LocalDateTime waktuSelesai){
+        Duration duration = Duration.between(waktuMulai, waktuSelesai);
+        return (duration.getSeconds()+1)/3600.0;
     }
 
     @Override
@@ -174,7 +196,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         Reservasi after = Reservasi.builder()
                 .id(id)
                 .emailUser(before.getEmailUser())
-                .statusPembayaran(before.getStatusPembayaran())
+                .statusPembayaran(StatusPembayaran.MENUNGGU_KONFIRMASI)
                 .buktiTransfer(paymentProof)
                 .harga(before.getHarga())
                 .idLapangan(before.getIdLapangan())
@@ -191,22 +213,22 @@ public class ReservasiServiceImpl implements ReservasiService {
     }
 
     @Override
-    public List<Reservasi> findReservasiByDate(String dateAsString){
+    public List<Reservasi> findReservasiByDate(String dateAsString) throws ParseException {
         List<Reservasi> allReservasi = reservasiRepository.findAll();
         List<Reservasi> allReservasiByDate = new ArrayList<>();
-        try {
-            Date inputDate = parseStringToDate(dateAsString);
-            for (Reservasi reservasi: allReservasi){
-                LocalDateTime dateTime = reservasi.getWaktuMulai();
-                Instant instant = dateTime.toInstant(ZoneOffset.UTC);
-                Date date = Date.from(instant);
-                if (inputDate.equals(date)){
-                    allReservasiByDate.add(reservasi);
-                }
+        Date inputDate = parseStringToDate(dateAsString);
+        for (Reservasi reservasi: allReservasi){
+            if (compareDateAndDatetime(inputDate, reservasi.getWaktuMulai())){
+                allReservasiByDate.add(reservasi);
             }
-            return allReservasiByDate;
-        } catch (ParseException e) {
-            return allReservasiByDate;
         }
+        return allReservasiByDate;
+
+    }
+
+    private boolean compareDateAndDatetime(Date date, LocalDateTime datetime){
+        return (date.getYear() + 1900) == datetime.getYear() &&
+                (date.getMonth() + 1) == datetime.getMonthValue() &&
+                date.getDate() == datetime.getDayOfMonth();
     }
 }
