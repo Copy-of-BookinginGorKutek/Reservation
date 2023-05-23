@@ -3,6 +3,7 @@ package com.b2.reservation.util;
 import com.b2.reservation.model.lapangan.Lapangan;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,13 @@ public class TimeValidation {
     }
 
     public Boolean isDateTimeValid(LocalDateTime start, LocalDateTime end){
+        LocalDateTime localDateTimeUTC = LocalDateTime.now(ZoneId.of("UTC"));
+        LocalDateTime localDateTimeConverted = localDateTimeUTC.atZone(ZoneId.of("UTC"))
+                .withZoneSameInstant(ZoneId.of("Asia/Jakarta"))
+                .toLocalDateTime();
+
         return start.isBefore(end) &&
-                (start.isEqual(LocalDateTime.now()) || start.isAfter(LocalDateTime.now())) &&
+                (start.isEqual(localDateTimeConverted) || start.isAfter(localDateTimeConverted)) &&
                 (start.toLocalDate().equals(end.toLocalDate()));
     }
 
