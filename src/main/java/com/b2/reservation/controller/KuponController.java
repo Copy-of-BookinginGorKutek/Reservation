@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/gor")
 @RequiredArgsConstructor
+@CrossOrigin
 public class KuponController {
     private final KuponService kuponService;
     @PostMapping("/create-kupon")
@@ -22,14 +23,14 @@ public class KuponController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get-kupon")
+    @GetMapping("/get-all-kupon")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<Kupon>> getAllKupon(){
         List<Kupon> listAllKupon = kuponService.findAll();
         return ResponseEntity.ok(listAllKupon);
     }
 
-    @DeleteMapping("/delete-kupon")
+    @DeleteMapping("/delete-kupon/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteKuponById(@PathVariable Integer id){
         kuponService.delete(id);

@@ -35,7 +35,8 @@ class ReservasiServiceImplTests {
     private LapanganRepository lapanganRepository;
 
     Reservasi reservasi;
-    Reservasi newReservasi;
+    Reservasi newReservasi1;
+    Reservasi newReservasi2;
     ReservasiRequest createRequest;
     ReservasiRequest updateRequest;
 
@@ -74,7 +75,7 @@ class ReservasiServiceImplTests {
                 .waktuBerakhir(ec)
                 .build();
 
-        newReservasi = Reservasi.builder()
+        newReservasi1 = Reservasi.builder()
                 .id(0)
                 .emailUser("test2@email.com")
                 .idLapangan(lap1.getId())
@@ -83,7 +84,15 @@ class ReservasiServiceImplTests {
                 .statusPembayaran(StatusPembayaran.MENUNGGU_KONFIRMASI)
                 .build();
 
-
+        newReservasi2 = Reservasi.builder()
+                .id(0)
+                .emailUser("test1@email.com")
+                .statusPembayaran(StatusPembayaran.MENUNGGU_PEMBAYARAN)
+                .buktiTransfer("https://drive.google.com/file/d/1tSy_MqFKbe8VoFjyy-QqAsyZh9UvAv39/view?usp=share_link")
+                .idLapangan(lap1.getId())
+                .waktuMulai(sc)
+                .waktuBerakhir(ec)
+                .build();
     }
 
     @Test
@@ -131,9 +140,9 @@ class ReservasiServiceImplTests {
         when(repository.save(any(Reservasi.class))).thenAnswer(invocation ->
                 invocation.getArgument(0, Reservasi.class));
 
-        Reservasi result = service.update(0, updateRequest);
+        Reservasi result = service.updateStatus(0, updateRequest);
         verify(repository, atLeastOnce()).save(any(Reservasi.class));
-        Assertions.assertEquals(newReservasi, result);
+        Assertions.assertEquals(newReservasi1, result);
     }
 
 
@@ -141,7 +150,7 @@ class ReservasiServiceImplTests {
     void whenUpdateReservationAndNotFoundShouldThrowException() {
         when(repository.findById(any(Integer.class))).thenReturn(Optional.empty());
         Assertions.assertThrows(ReservasiDoesNotExistException.class, () -> {
-            service.update(0, createRequest);
+            service.updateStatus(0, createRequest);
         });
     }
 
@@ -159,6 +168,19 @@ class ReservasiServiceImplTests {
         Assertions.assertThrows(ReservasiDoesNotExistException.class, () -> {
             service.delete(0);
         });
+    }
+
+    @Test
+    void whenAddPaymentProofShouldReturnTheUpdatedReservation() {
+        when(repository.findById(any(Integer.class))).thenReturn(Optional.of(reservasi));
+        when(repository.save(any(Reservasi.class))).thenAnswer(invocation ->
+                invocation.getArgument(0, Reservasi.class));
+
+        String linkExample = "https://drive.google.com/file/d/1tSy_MqFKbe8VoFjyy-QqAsyZh9UvAv39/view?usp=share_link";
+        Reservasi result = service.addPaymentProof(0, linkExample);
+
+        verify(repository, atLeastOnce()).save(any(Reservasi.class));
+        Assertions.assertEquals(newReservasi2, result);
     }
 
 }

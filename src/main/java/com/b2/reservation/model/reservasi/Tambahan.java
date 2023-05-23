@@ -1,5 +1,6 @@
 package com.b2.reservation.model.reservasi;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ public class Tambahan {
     @GeneratedValue
     private Integer tambahanId;
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "_reservasi_id")
     private Reservasi reservasi;
     @Enumerated(EnumType.STRING)

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class KuponRequest {
-    private String name;
-    private Integer percentageDiscounted;
+public class PaymentProofRequest {
+    private String url;
 }

@@ -21,12 +21,16 @@ public class TimeValidation {
         }
     }
 
+    private Boolean isLapanganUsed(LapanganDipakai lapanganDipakai, LocalDateTime start, LocalDateTime end){
+        return ((start.isAfter(lapanganDipakai.getWaktuMulai()) || (start.isEqual(lapanganDipakai.getWaktuMulai()))) &&
+                ((end.isBefore(lapanganDipakai.getWaktuSelesai())) || (end.isEqual(lapanganDipakai.getWaktuSelesai())))) ||
+                (start.isBefore(lapanganDipakai.getWaktuMulai()) && end.isAfter(lapanganDipakai.getWaktuMulai())) ||
+                (start.isBefore(lapanganDipakai.getWaktuSelesai()) && end.isAfter(lapanganDipakai.getWaktuSelesai()));
+    }
+
     public Lapangan findEmptyLapangan(LocalDateTime start, LocalDateTime end){
         for (LapanganDipakai lapanganDipakai: lapanganDipakaiList){
-            if (((start.isAfter(lapanganDipakai.getWaktuMulai()) || (start.isEqual(lapanganDipakai.getWaktuMulai()))) &&
-                    ((end.isBefore(lapanganDipakai.getWaktuSelesai())) || (end.isEqual(lapanganDipakai.getWaktuSelesai())))) ||
-                    (start.isBefore(lapanganDipakai.getWaktuMulai()) && end.isAfter(lapanganDipakai.getWaktuMulai())) ||
-                    (start.isBefore(lapanganDipakai.getWaktuSelesai()) && end.isAfter(lapanganDipakai.getWaktuSelesai()))){
+            if (isLapanganUsed(lapanganDipakai, start, end)){
                 mapLapanganDipakai.replace(lapanganDipakai.getLapangan(), true);
             }
         }
