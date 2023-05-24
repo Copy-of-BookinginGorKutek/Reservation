@@ -36,12 +36,12 @@ class KuponServiceImpTest {
 
         kupon = Kupon.builder().id(1)
                 .name("diskon1")
-                .percentageDiscounted(0.5)
+                .percentageDiscounted(50)
                 .build();
 
         createRequest = KuponRequest.builder()
                 .name("diskon1")
-                .percentageDiscounted(0.5)
+                .percentageDiscounted(50)
                 .build();
 
     }
@@ -53,7 +53,7 @@ class KuponServiceImpTest {
             var kupon = invocation.getArgument(0, Kupon.class);
             kupon.setId(1);
             kupon.setName("diskon1");
-            kupon.setPercentageDiscounted(0.5);
+            kupon.setPercentageDiscounted(50);
             return kupon;
         });
 
