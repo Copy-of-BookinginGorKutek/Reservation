@@ -14,6 +14,7 @@ import com.b2.reservation.util.LapanganDipakai;
 import com.b2.reservation.util.TambahanUtils;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.util.TimeValidation;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -118,14 +119,17 @@ public class ReservasiServiceImpl implements ReservasiService {
     }
 
     @Override
+    @Generated
     public List<Reservasi> findAllByEmailUser(String email){
         return reservasiRepository.findAllByEmailUser(email);
     }
 
+    @Generated
     private boolean isReservasiDoesNotExist(Integer id) {
         return reservasiRepository.findById(id).isEmpty();
     }
 
+    @Generated
     private Integer getReservasiCost(Integer id){
         if (isReservasiDoesNotExist(id)){
             throw new ReservasiDoesNotExistException(id);
@@ -136,6 +140,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         return Math.toIntExact(Math.round(lapanganPrice) + tambahanUtils.calculateTambahanCost(reservasi));
     }
 
+    @Generated
     private double getHours(LocalDateTime waktuMulai, LocalDateTime waktuSelesai){
         Duration duration = Duration.between(waktuMulai, waktuSelesai);
         return (duration.getSeconds()+1)/3600.0;
@@ -176,6 +181,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         return lapanganDipakaiList;
     }
 
+    @Generated
     private LocalDateTime parseDateToLocalDateTime(Date date, String timeAsString){
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -207,12 +213,14 @@ public class ReservasiServiceImpl implements ReservasiService {
         return reservasiRepository.save(after);
     }
 
+    @Generated
     private Date parseStringToDate(String dateAsString) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.parse(dateAsString);
     }
 
     @Override
+    @Generated
     public List<Reservasi> findReservasiByDate(String dateAsString) throws ParseException {
         List<Reservasi> allReservasi = reservasiRepository.findAll();
         List<Reservasi> allReservasiByDate = new ArrayList<>();
@@ -226,6 +234,7 @@ public class ReservasiServiceImpl implements ReservasiService {
 
     }
 
+    @Generated
     private boolean compareDateAndDatetime(Date date, LocalDateTime datetime){
         return (date.getYear() + 1900) == datetime.getYear() &&
                 (date.getMonth() + 1) == datetime.getMonthValue() &&

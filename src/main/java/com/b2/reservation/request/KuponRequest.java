@@ -1,14 +1,12 @@
 package com.b2.reservation.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Generated
 public class KuponRequest {
     private String name;
     private Integer percentageDiscounted;

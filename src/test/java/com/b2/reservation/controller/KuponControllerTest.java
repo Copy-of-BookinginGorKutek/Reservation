@@ -1,5 +1,6 @@
 package com.b2.reservation.controller;
 import com.b2.reservation.Util;
+import com.b2.reservation.config.SecurityConfiguration;
 import com.b2.reservation.model.kupon.Kupon;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
 import com.b2.reservation.request.KuponRequest;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,8 +30,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Import(SecurityConfiguration.class)
 @WebMvcTest(controllers = KuponController.class)
-@AutoConfigureMockMvc
 class KuponControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -92,7 +94,7 @@ class KuponControllerTest {
     void testGetKuponAdmin() throws Exception {
         when(service.findAll()).thenReturn(List.of(kupon));
 
-        mvc.perform(get("/gor/get-kupon")
+        mvc.perform(get("/gor/get-all-kupon")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContent))
                         .with(csrf()))
@@ -108,7 +110,7 @@ class KuponControllerTest {
     void testGetKuponUser() throws Exception {
         when(service.findAll()).thenReturn(List.of(kupon));
 
-        mvc.perform(get("/gor/get-kupon")
+        mvc.perform(get("/gor/get-all-kupon")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContent))
                         .with(csrf()))

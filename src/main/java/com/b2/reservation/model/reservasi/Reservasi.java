@@ -3,10 +3,7 @@ package com.b2.reservation.model.reservasi;
 import com.b2.reservation.model.kupon.Kupon;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "_reservasi")
+@Generated
 public class Reservasi {
     @Id
     @GeneratedValue

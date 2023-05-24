@@ -1,6 +1,7 @@
 package com.b2.reservation.exceptions.advice;
 
 import com.b2.reservation.exceptions.*;
+import lombok.Generated;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,6 +11,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @ControllerAdvice
+@Generated
 public class GlobalExceptionHandler {
     @ExceptionHandler(value = {DateTimeIsNotValidException.class})
     public ResponseEntity<Object> dateTimeIsNotValid(){
