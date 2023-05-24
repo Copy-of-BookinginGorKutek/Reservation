@@ -113,7 +113,6 @@ sonarqube-check:
       - .sonar/cache
   script:
     - gradle sonarqube --info --stacktrace
-    - gradle test jacocoTestReport sonarqube
   allow_failure: true
   only:
     - merge_requests
