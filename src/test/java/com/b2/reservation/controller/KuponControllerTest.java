@@ -53,18 +53,18 @@ class KuponControllerTest {
     void setUp() {
         kupon = Kupon.builder().id(1)
                 .name("diskon1")
-                .percentageDiscounted(0.5)
+                .percentageDiscounted(50)
                 .build();
 
         createRequest = KuponRequest.builder()
                 .name("diskon1")
-                .percentageDiscounted(0.5)
+                .percentageDiscounted(50)
                 .build();
 
         bodyContent= new Object() {
             public final Integer id = 0;
             public final String name = "diskon1";
-            public final Double percentageDiscounted = 0.5;
+            public final Integer percentageDiscounted = 50;
 
 
         };
