@@ -1,5 +1,8 @@
 package com.b2.reservation.model.reservasi;
 
+import lombok.Generated;
+
+@Generated
 public enum TambahanCategory {
     RAKET(15000),
     AIR_MINERAL(5000),

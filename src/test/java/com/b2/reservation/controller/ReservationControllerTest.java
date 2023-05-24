@@ -1,22 +1,28 @@
 package com.b2.reservation.controller;
 
 import com.b2.reservation.Util;
+import com.b2.reservation.config.SecurityConfiguration;
+import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.reservasi.Reservasi;
 import com.b2.reservation.model.reservasi.StatusPembayaran;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.service.ReservasiServiceImpl;
 import com.b2.reservation.util.JwtUtils;
+import com.b2.reservation.util.LapanganDipakai;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -27,9 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 
-
+@Import(SecurityConfiguration.class)
 @WebMvcTest(controllers = ReservationController.class)
-@AutoConfigureMockMvc
 class ReservationControllerTest {
 
     @Autowired
@@ -43,6 +48,9 @@ class ReservationControllerTest {
 
     @MockBean
     private JwtUtils utils;
+
+    Lapangan lapangan;
+    LapanganDipakai lapanganDipakai;
     Reservasi reservasi;
     Object bodyContent;
 
@@ -62,7 +70,16 @@ class ReservationControllerTest {
 
         };
 
+        LocalDateTime sc = LocalDateTime.of(2023,5,14,19,0,0);
+        LocalDateTime ec = LocalDateTime.of(2023,5,14,21,0,0);
+
         email =  "test@email.com";
+
+        lapangan = Lapangan
+                .builder()
+                .id(1)
+                .build();
+        lapanganDipakai = new LapanganDipakai(lapangan, sc, ec);
 
     }
 
@@ -147,15 +164,54 @@ class ReservationControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     void testUpdatePaymentProof() throws Exception {
-        String linkExample = "https://drive.google.com/file/d/1tSy_MqFKbe8VoFjyy-QqAsyZh9UvAv39/view?usp=share_link";
+        String linkExample = "{\"url\":\"https://drive.google.com/file/d/1tSy_MqFKbe8VoFjyy-QqAsyZh9UvAv39/view?usp=share_link\"}";
 
         mvc.perform(put("/reservation/bukti-bayar/1")
                         .content(linkExample)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("putProofOfPayment"));
 
         verify(service, atLeastOnce()).addPaymentProof(any(Integer.class), any(String.class));
+    }
+
+    @Test
+    @WithMockUser(roles="USER")
+    void testGetLapanganDipakai() throws Exception{
+        when(service.createLapanganDipakaiList()).thenReturn(List.of(lapanganDipakai));
+        mvc.perform(get("/reservation/get-lapangan-dipakai"))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("getLapanganDipakai"));
+        verify(service, times(1)).createLapanganDipakaiList();
+    }
+    @Test
+    @WithMockUser(roles="USER")
+    void testGetReservationById() throws Exception{
+        when(service.findById(1)).thenReturn(reservasi);
+        mvc.perform(get("/reservation/get/1"))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("getReservationById"));
+        verify(service, times(1)).findById(1);
+    }
+    @Test
+    @WithMockUser(roles="USER")
+    void testGetReservasiByDateSuccess() throws Exception{
+        when(service.findReservasiByDate(anyString())).thenReturn(List.of(reservasi));
+        mvc.perform(get("/reservation/get-reservasi-by-date/2023-05-14"))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(handler().methodName("getReservasiByDate"));
+        verify(service, times(1)).findReservasiByDate(anyString());
+    }
+
+    @Test
+    @WithMockUser(roles="USER")
+    void testGetReservasiByDateFail() throws Exception{
+        when(service.findReservasiByDate(anyString())).thenThrow(ParseException.class);
+        mvc.perform(get("/reservation/get-reservasi-by-date/2023-05-20"))
+                .andExpect(status().isBadRequest())
+                .andExpect(handler().methodName("getReservasiByDate"));
+        verify(service, times(1)).findReservasiByDate(anyString());
     }
 
 }

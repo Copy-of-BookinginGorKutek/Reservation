@@ -16,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Date;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +36,7 @@ class LapanganServiceImplTest {
 
     OperasionalLapanganRequest createRequest;
     OperasionalLapangan operasionalLapangan;
+    OperasionalLapangan operasionalLapangan1;
 
 
 
@@ -52,6 +55,11 @@ class LapanganServiceImplTest {
                 .id(0)
                 .idLapangan(0)
                 .tanggalLibur(date)
+                .build();
+        operasionalLapangan1 = OperasionalLapangan.builder()
+                .id(1)
+                .idLapangan(1)
+                .tanggalLibur(new Date(2020, 10, 10))
                 .build();
     }
 
@@ -91,6 +99,15 @@ class LapanganServiceImplTest {
 
     }
 
+    @Test
+    void testGetAllClosedLapanganByDate(){
+        when(operasionalLapanganRepository.findAll()).thenReturn(List.of(operasionalLapangan, operasionalLapangan1));
+        Date date = new Date(2020, 10, 10);
+        List<OperasionalLapangan> operasionalLapanganList = service.getAllClosedLapanganByDate(date);
+        Assertions.assertEquals(1, operasionalLapanganList.size());
+        Assertions.assertEquals(operasionalLapangan1, operasionalLapanganList.get(0));
+        verify(operasionalLapanganRepository, times(1)).findAll();
+    }
 
 
 }
