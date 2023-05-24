@@ -2,7 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.0.4"
 	id("io.spring.dependency-management") version "1.1.0"
-	id("org.sonarqube") version "3.0"
+	id("org.sonarqube") version "4.0.0.2929"
 	jacoco
 }
 
@@ -69,10 +69,10 @@ tasks.jacocoTestReport {
 	}
 }
 
-sonarqube{
-	properties{
-		property("sonar.projectKey", "AdvProg_reguler-2023_mahasiswa_kelas-b_2106750231-Jaycent-Gunawan-Ongris-_kelompok-b2_reservation_AYeDExOd9YbzwjBXjMsX")
-		property("sonar.host.url", "https://sonarqube.cs.ui.ac.id")
-		property("sonar.login", "b28717ffb45c365e172e26f30189c57834e18b41")
+sonarqube {
+	properties {
+		property("sonar.projectKey", "reservationB2adpro")
+		property("sonar.organization", "b2adpro")
+		property("sonar.host.url", "https://sonarcloud.io")
 	}
 }

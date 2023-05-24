@@ -15,7 +15,7 @@ variables:
 
 stages:
   - build
-#  - test
+  - test
   - publish
   - deploy
   - sonarqube-check
@@ -42,27 +42,27 @@ Build:
 
 
 
-#Test:
-#  stage: test
-#  image: gradle:jdk17-alpine
-#  dependencies:
-#    - Build
-#  services:
-#    - "postgres:latest"
-#  before_script:
-#    - echo `pwd`
-#    - export GRADLE_USER_HOME=`pwd`/.gradle
-#    - export SPRING_PROFILES_ACTIVE=test
-#  script:
-#    - gradle check --info --stacktrace
-#    - gradle test
-#    - gradle jacocoTestReport
-#    - grep -Eo "Total.*?([0-9]{1,3})%" build/jacocoHtml/index.html
-#  artifacts:
-#    when: always
-#    reports:
-#      junit: build/test-results/test/**/TEST-*.xml
-#  coverage: '/Total.*?([0-9]{1,3})%/'
+Test:
+  stage: test
+  image: gradle:jdk17-alpine
+  dependencies:
+    - Build
+  services:
+    - "postgres:latest"
+  before_script:
+    - echo `pwd`
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - export SPRING_PROFILES_ACTIVE=test
+  script:
+    - gradle check --info --stacktrace
+    - gradle test
+    - gradle jacocoTestReport
+    - grep -Eo "Total.*?([0-9]{1,3})%" build/jacocoHtml/index.html
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+  coverage: '/Total.*?([0-9]{1,3})%/'
 
 
 
@@ -106,11 +106,17 @@ Deploy:
 
 sonarqube-check:
   stage: sonarqube-check
-  only:
-    - main
-    - staging
-  variables:
-    SONAR_HOST_URL: 'https://sonarqube.cs.ui.ac.id/'
-    GIT_DEPTH: 0
-  script: gradle sonarqube -Dsonar.qualitygate.wait=true
+  image: gradle:jdk17-alpine
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - gradle sonarqube --info --stacktrace
+    - gradle test jacocoTestReport sonarqube
   allow_failure: true
+  only:
+    - merge_requests
+    - master
+    - develop
+    - staging
