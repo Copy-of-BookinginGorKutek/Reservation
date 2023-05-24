@@ -2,10 +2,7 @@ package com.b2.reservation.model.kupon;
 
 import com.b2.reservation.model.reservasi.Reservasi;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -13,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "_kupon")
+@Generated
 public class Kupon {
     @Id
     @GeneratedValue

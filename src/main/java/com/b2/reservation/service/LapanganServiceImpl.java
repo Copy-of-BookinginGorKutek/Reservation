@@ -4,6 +4,7 @@ import com.b2.reservation.exceptions.LapanganDoesNotExistException;
 import com.b2.reservation.repository.LapanganRepository;
 import com.b2.reservation.repository.OperasionalLapanganRepository;
 import com.b2.reservation.request.OperasionalLapanganRequest;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.b2.reservation.model.lapangan.Lapangan;
@@ -58,9 +59,11 @@ public class LapanganServiceImpl implements LapanganService{
         }
         return closedLapanganByDateList;
     }
+    @Generated
     public List<OperasionalLapangan> getAllClosedLapangan() {
         return operasionalLapanganRepository.findAll();
     }
+    @Generated
     public void deleteOperasionalLapangan(Integer id){
         operasionalLapanganRepository.deleteOperasionalLapanganById(id);
     }

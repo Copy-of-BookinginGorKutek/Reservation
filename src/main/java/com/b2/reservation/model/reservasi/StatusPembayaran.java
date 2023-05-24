@@ -1,5 +1,8 @@
 package com.b2.reservation.model.reservasi;
 
+import lombok.Generated;
+
+@Generated
 public enum StatusPembayaran {
     MENUNGGU_PEMBAYARAN(1),
     MENUNGGU_KONFIRMASI(2),

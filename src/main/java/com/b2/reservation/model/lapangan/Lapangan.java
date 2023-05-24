@@ -1,10 +1,7 @@
 package com.b2.reservation.model.lapangan;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "_lapangan")
+@Generated
 public class Lapangan {
     private static Integer cost = 50000;
     @Id

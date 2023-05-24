@@ -1,10 +1,7 @@
 package com.b2.reservation.model.lapangan;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
@@ -14,6 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "_operasional_lapangan")
+@Generated
 public class OperasionalLapangan {
     @Id
     @GeneratedValue

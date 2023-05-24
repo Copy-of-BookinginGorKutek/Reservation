@@ -17,6 +17,7 @@ import com.b2.reservation.model.lapangan.Lapangan;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(controllers = LapanganController.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 class LapanganControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -74,7 +75,6 @@ class LapanganControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     void testCreateLapangan() throws Exception {
         when(service.create()).thenReturn(lapangan);
 
@@ -90,7 +90,6 @@ class LapanganControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     void testCreateCloseDate() throws Exception {
         when(service.createCloseDate(any(OperasionalLapanganRequest.class))).thenReturn(operasionalLapangan);
 
@@ -103,5 +102,35 @@ class LapanganControllerTest {
                 .andExpect(jsonPath("$.idLapangan").value(operasionalLapangan.getIdLapangan()));
 
         verify(service, atLeastOnce()).createCloseDate(any(OperasionalLapanganRequest.class));
+    }
+
+    @Test
+    void testFindClosedLapangan() throws Exception{
+        when(service.getAllClosedLapangan()).thenReturn(List.of(operasionalLapangan));
+
+        mvc.perform(get("/gor/closed-lapangan"))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("findClosedLapangan"));
+
+        verify(service, times(1)).getAllClosedLapangan();
+    }
+
+    @Test
+    void testFindClosedLapanganByDate() throws Exception{
+        when(service.getAllClosedLapanganByDate(any(Date.class))).thenReturn(null);
+        mvc.perform(get("/gor/closed-lapangan/by-date/2023-11-11"))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("findClosedLapanganByDate"));
+
+        verify(service, times(1)).getAllClosedLapanganByDate(any(Date.class));
+    }
+
+    @Test
+    void testDeleteOperationalLapangan() throws Exception{
+        mvc.perform(delete("/gor/closed-lapangan/delete/1"))
+                .andExpect(status().isOk())
+                .andExpect(handler().methodName("deleteOperasionalLapangan"));
+
+        verify(service, times(1)).deleteOperasionalLapangan(1);
     }
 }
