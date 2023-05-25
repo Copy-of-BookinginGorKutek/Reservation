@@ -1,8 +1,10 @@
 package com.b2.reservation.service;
 
 import com.b2.reservation.exceptions.LapanganDoesNotExistException;
+import com.b2.reservation.model.User;
 import com.b2.reservation.repository.LapanganRepository;
 import com.b2.reservation.repository.OperasionalLapanganRepository;
+import com.b2.reservation.request.NotificationRequest;
 import com.b2.reservation.request.OperasionalLapanganRequest;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ public class LapanganServiceImpl implements LapanganService{
     private final LapanganRepository lapanganRepository;
 
     private final OperasionalLapanganRepository operasionalLapanganRepository;
+
+    private final UserService userService;
     @Override
     public Lapangan create() {
         Lapangan lapangan = Lapangan.builder().build();
@@ -41,6 +45,19 @@ public class LapanganServiceImpl implements LapanganService{
                 .build();
         operasionalLapangan = operasionalLapanganRepository.save(operasionalLapangan);
         return operasionalLapangan;
+    }
+
+    private void sendNotificationToAllUsers(OperasionalLapangan operasionalLapangan, String token){
+        List<User> listOfUsers = userService.getAllUser(token);
+        String message = "Lapangan " + operasionalLapangan.getIdLapangan() + " ditutup pada " + operasionalLapangan.getTanggalLibur();
+        for (User user: listOfUsers){
+            NotificationRequest request = NotificationRequest.builder()
+                    .emailUser(user.getEmail())
+                    .statusId(null)
+                    .message(message)
+                    .build();
+            // TODO: finish
+        }
     }
 
     private boolean isLapanganDoesNotExist(Integer idLapangan) {
