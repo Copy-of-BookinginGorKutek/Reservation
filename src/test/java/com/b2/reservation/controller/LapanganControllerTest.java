@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -91,17 +92,19 @@ class LapanganControllerTest {
 
     @Test
     void testCreateCloseDate() throws Exception {
-        when(service.createCloseDate(any(OperasionalLapanganRequest.class))).thenReturn(operasionalLapangan);
-
+        when(service.createCloseDate(any(OperasionalLapanganRequest.class), anyString())).thenReturn(operasionalLapangan);
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setBearerAuth("controllertokentesting");
         mvc.perform(post("/gor/close-lapangan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContentOperasionalLapangan))
+                        .headers(requestHeaders)
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("createCloseDate"))
                 .andExpect(jsonPath("$.idLapangan").value(operasionalLapangan.getIdLapangan()));
 
-        verify(service, atLeastOnce()).createCloseDate(any(OperasionalLapanganRequest.class));
+        verify(service, atLeastOnce()).createCloseDate(any(OperasionalLapanganRequest.class), anyString());
     }
 
     @Test

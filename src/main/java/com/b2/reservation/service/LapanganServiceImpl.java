@@ -40,7 +40,7 @@ public class LapanganServiceImpl implements LapanganService{
     }
 
     @Override
-    public OperasionalLapangan createCloseDate(OperasionalLapanganRequest request) {
+    public OperasionalLapangan createCloseDate(OperasionalLapanganRequest request, String token) {
         Integer idLapangan = request.getIdLapangan();
         Date tanggalLibur = request.getTanggalLibur();
         if (isLapanganDoesNotExist(idLapangan)) {
@@ -51,10 +51,11 @@ public class LapanganServiceImpl implements LapanganService{
                 .tanggalLibur(tanggalLibur)
                 .build();
         operasionalLapangan = operasionalLapanganRepository.save(operasionalLapangan);
+        sendNotificationToAllUsers(operasionalLapangan, token);
         return operasionalLapangan;
     }
 
-    private void sendNotificationToAllUsers(OperasionalLapangan operasionalLapangan, String token){
+    public void sendNotificationToAllUsers(OperasionalLapangan operasionalLapangan, String token){
         List<User> listOfUsers = userService.getAllUser(token);
         String message = "Lapangan " + operasionalLapangan.getIdLapangan() + " ditutup pada " + operasionalLapangan.getTanggalLibur();
         for (User user: listOfUsers){

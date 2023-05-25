@@ -30,8 +30,9 @@ public class LapanganController {
 
     @PostMapping("/close-lapangan")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<OperasionalLapangan> createCloseDate(@RequestBody OperasionalLapanganRequest request) {
-        OperasionalLapangan response = lapanganService.createCloseDate(request);
+    public ResponseEntity<OperasionalLapangan> createCloseDate(@RequestBody OperasionalLapanganRequest request, @RequestHeader(name = "Authorization") String token) {
+        token = token.substring(7);
+        OperasionalLapangan response = lapanganService.createCloseDate(request, token);
         return ResponseEntity.ok(response);
     }
 

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Date;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 class LapanganServiceImplTest {
 
+    @Spy
     @InjectMocks
     private LapanganServiceImpl service;
 
@@ -84,8 +86,8 @@ class LapanganServiceImplTest {
             operasional.setId(0);
             return operasional;
         });
-
-        OperasionalLapangan result = service.createCloseDate(createRequest);
+        doNothing().when(service).sendNotificationToAllUsers(any(OperasionalLapangan.class), anyString());
+        OperasionalLapangan result = service.createCloseDate(createRequest, "TEST");
         verify(operasionalLapanganRepository, atLeastOnce()).save(any(OperasionalLapangan.class));
         Assertions.assertEquals(operasionalLapangan, result);
     }
@@ -94,7 +96,7 @@ class LapanganServiceImplTest {
     void whenCreateClosedDateWithInvalidLapanganIdShouldThrowsException() {
         when(lapanganRepository.findById(any(Integer.class))).thenReturn(Optional.empty());
         Assertions.assertThrows(LapanganDoesNotExistException.class, () -> {
-            service.createCloseDate(createRequest);
+            service.createCloseDate(createRequest, "TEST");
         });
 
     }
