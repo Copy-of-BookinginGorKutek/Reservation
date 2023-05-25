@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -16,23 +15,15 @@ import java.util.Map;
 public class TambahanUtils {
     private final TambahanRepository tambahanRepository;
 
-    public void createTambahanForReservasi(Reservasi reservasi, Map<String, Integer> tambahanQuantity){
-        for (Map.Entry<String, Integer> entry : tambahanQuantity.entrySet()) {
-            Integer quantity = entry.getValue();
-            if (quantity > 0) {
-                TambahanCategory tambahanCategory = TambahanCategory.valueOf(entry.getKey());
-                Tambahan tambahan = createTambahan(reservasi, tambahanCategory, quantity);
-                this.tambahanRepository.save(tambahan);
-            }
-        }
-    }
-
-    public Tambahan createTambahan(Reservasi reservasi, TambahanCategory tambahanCategory, Integer quantity){
-        return Tambahan.builder()
+    public void createTambahan(Reservasi reservasi, TambahanCategory tambahanCategory, Integer quantity){
+        if(quantity == 0)
+            return;
+        Tambahan tambahan =  Tambahan.builder()
                 .reservasi(reservasi)
                 .category(tambahanCategory)
                 .quantity(quantity)
                 .build();
+        tambahanRepository.save(tambahan);
     }
 
     public Integer calculateTambahanCost(Reservasi reservasi){
@@ -43,4 +34,6 @@ public class TambahanUtils {
         }
         return cost;
     }
+
+
 }
