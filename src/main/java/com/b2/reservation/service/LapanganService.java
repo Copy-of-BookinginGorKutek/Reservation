@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public interface LapanganService {
     Lapangan create();
-    OperasionalLapangan createCloseDate(OperasionalLapanganRequest request);
+    OperasionalLapangan createCloseDate(OperasionalLapanganRequest request, String token);
     List<OperasionalLapangan> getAllClosedLapangan();
     List<OperasionalLapangan> getAllClosedLapanganByDate(Date date);
     void deleteOperasionalLapangan(Integer id);

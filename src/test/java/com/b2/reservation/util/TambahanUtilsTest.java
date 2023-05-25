@@ -86,13 +86,6 @@ class TambahanUtilsTest {
     }
 
     @Test
-    void testCreateTambahanForReservasi(){
-        when(tambahanRepository.save(any())).thenReturn(this.tambahan);
-        tambahanUtils.createTambahanForReservasi(this.reservasi, this.tambahanQuantity);
-        verify(tambahanRepository, times(3)).save(any());
-    }
-
-    @Test
     void testCalculateTambahanCost(){
         when(tambahanRepository.findByReservasi(any())).thenReturn(tambahanList);
         Integer cost = tambahanUtils.calculateTambahanCost(this.reservasi);

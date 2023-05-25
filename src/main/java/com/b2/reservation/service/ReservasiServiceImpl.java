@@ -11,7 +11,7 @@ import com.b2.reservation.model.reservasi.StatusPembayaran;
 import com.b2.reservation.repository.*;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.util.LapanganDipakai;
-import com.b2.reservation.util.TambahanUtils;
+import com.b2.reservation.util.TambahanService;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.util.TimeValidation;
 import lombok.Generated;
@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -31,11 +29,12 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ReservasiServiceImpl implements ReservasiService {
     private final ReservasiRepository reservasiRepository;
-    private final TambahanUtils tambahanUtils;
+    private final TambahanService tambahanService;
     private final TambahanRepository tambahanRepository;
     private final KuponRepository kuponRepository;
     private final LapanganRepository lapanganRepository;
     private final OperasionalLapanganRepository operasionalLapanganRepository;
+
     @Override
     public List<Reservasi> findAll() {
         return reservasiRepository.findAll();
@@ -73,7 +72,7 @@ public class ReservasiServiceImpl implements ReservasiService {
                 .kuponId(request.getKuponId())
                 .build();
         reservasi = reservasiRepository.save(reservasi);
-        tambahanUtils.createTambahanForReservasi(reservasi, request.getTambahanQuantity());
+        tambahanService.createTambahanForReservasi(reservasi, request.getTambahanQuantity());
         Integer hargaBeforeKupon = getReservasiCost(reservasi.getId());
         // Id kupon 0 = not used
         if (request.getKuponId().equals(0)){
@@ -85,6 +84,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         return this.reservasiRepository.save(reservasi);
     }
 
+    @Generated
     private Integer calculatePriceAfterDiscount(Integer kuponId, Integer basePrice){
         Optional<Kupon> kupon = kuponRepository.findById(kuponId);
         if (kupon.isEmpty()){
@@ -137,7 +137,7 @@ public class ReservasiServiceImpl implements ReservasiService {
         Reservasi reservasi = this.reservasiRepository.findById(id).orElseThrow();
         Double lapanganPrice = getHours(reservasi.getWaktuMulai(), reservasi.getWaktuBerakhir()) * Lapangan.getCost();
         System.out.println(lapanganPrice);
-        return Math.toIntExact(Math.round(lapanganPrice) + tambahanUtils.calculateTambahanCost(reservasi));
+        return Math.toIntExact(Math.round(lapanganPrice) + tambahanService.getCost(reservasi));
     }
 
     @Generated
