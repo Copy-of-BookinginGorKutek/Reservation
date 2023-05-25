@@ -10,8 +10,8 @@ import com.b2.reservation.repository.LapanganRepository;
 import com.b2.reservation.repository.OperasionalLapanganRepository;
 import com.b2.reservation.repository.ReservasiRepository;
 import com.b2.reservation.request.ReservasiRequest;
+import com.b2.reservation.util.TambahanService;
 import com.b2.reservation.util.TambahanUtils;
-import com.b2.reservation.util.TimeValidation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,6 +50,8 @@ class ReservasiServiceImplTests {
 
     @Mock
     private KuponRepository kuponRepository;
+    @Mock
+    private TambahanService tambahanService;
 
     Reservasi tempReservasi;
     Reservasi reservasi;
@@ -126,7 +127,6 @@ class ReservasiServiceImplTests {
                 .kuponId(0)
                 .buktiTransfer(null)
                 .build();
-
         tambahanQty = new HashMap<>();
         tambahanQty.put("AIR_MINERAL", 0);
         tambahanQty.put("RAKET", 1);
@@ -239,7 +239,7 @@ class ReservasiServiceImplTests {
             return reservasi1;
         });
         when(repository.findAll()).thenReturn(List.of());
-        when(tambahanUtils.calculateTambahanCost(any(Reservasi.class))).thenReturn(20000);
+        when(tambahanService.getCost(any(Reservasi.class))).thenReturn(20000);
         when(repository.findById(1)).thenReturn(Optional.of(tempReservasi));
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
@@ -258,7 +258,7 @@ class ReservasiServiceImplTests {
 
 
         Reservasi reservasi = service.create(request);
-        verify(tambahanUtils, times(1)).createTambahanForReservasi(any(Reservasi.class), any());
+        verify(tambahanService, times(1)).createTambahanForReservasi(any(Reservasi.class), any());
         assertEquals("test1@email.com", reservasi.getEmailUser());
         assertTrue(reservasi.getWaktuMulai().toLocalDate().isEqual(date1));
         assertEquals(0, reservasi.getKuponId());
