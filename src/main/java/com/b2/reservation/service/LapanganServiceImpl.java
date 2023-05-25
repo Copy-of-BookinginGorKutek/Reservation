@@ -8,9 +8,14 @@ import com.b2.reservation.request.NotificationRequest;
 import com.b2.reservation.request.OperasionalLapanganRequest;
 import lombok.Generated;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +30,8 @@ public class LapanganServiceImpl implements LapanganService{
     private final OperasionalLapanganRepository operasionalLapanganRepository;
 
     private final UserService userService;
+
+    private final RestTemplate restTemplate;
     @Override
     public Lapangan create() {
         Lapangan lapangan = Lapangan.builder().build();
@@ -56,8 +63,22 @@ public class LapanganServiceImpl implements LapanganService{
                     .statusId(null)
                     .message(message)
                     .build();
-            // TODO: finish
+            postBroadcastNotification(request, token);
         }
+    }
+
+    private void postBroadcastNotification(NotificationRequest notificationRequest, String token){
+        HttpHeaders headers = getJSONHttpHeaders(token);
+        String url = "http://34.142.212.224:80/notification/send";
+        HttpEntity<NotificationRequest> http = new HttpEntity<>(notificationRequest, headers);
+        restTemplate.exchange(url, HttpMethod.POST, http, Object.class);
+    }
+
+    private HttpHeaders getJSONHttpHeaders(String token){
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setBearerAuth(token);
+        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return requestHeaders;
     }
 
     private boolean isLapanganDoesNotExist(Integer idLapangan) {
