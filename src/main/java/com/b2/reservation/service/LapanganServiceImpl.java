@@ -17,6 +17,7 @@ import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,8 +57,11 @@ public class LapanganServiceImpl implements LapanganService{
     }
 
     public void sendNotificationToAllUsers(OperasionalLapangan operasionalLapangan, String token){
+        Date tanggalLibur = operasionalLapangan.getTanggalLibur();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String tanggalLiburString = format.format(tanggalLibur);
         List<User> listOfUsers = userService.getAllUser(token);
-        String message = "Lapangan " + operasionalLapangan.getIdLapangan() + " ditutup pada " + operasionalLapangan.getTanggalLibur();
+        String message = "Lapangan " + operasionalLapangan.getIdLapangan() + " ditutup pada " + tanggalLiburString;
         for (User user: listOfUsers){
             NotificationRequest request = NotificationRequest.builder()
                     .emailUser(user.getEmail())
