@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/gor")
+@RequestMapping("/api/v1/gor")
 @RequiredArgsConstructor
 @CrossOrigin
 public class LapanganController {
@@ -48,7 +48,6 @@ public class LapanganController {
     public ResponseEntity<List<OperasionalLapangan>> findClosedLapanganByDate(@PathVariable String dateAsString) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date date = format.parse(dateAsString);
-        System.out.println(date);
         List<OperasionalLapangan> response = lapanganService.getAllClosedLapanganByDate(date);
         return ResponseEntity.ok(response);
     }

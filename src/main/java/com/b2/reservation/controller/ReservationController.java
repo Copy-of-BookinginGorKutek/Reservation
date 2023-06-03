@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/api/v1/reservation")
 @RequiredArgsConstructor
 public class ReservationController {
     private final ReservasiService reservasiService;

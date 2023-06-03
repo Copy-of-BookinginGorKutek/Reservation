@@ -12,7 +12,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-@RequestMapping("/notifikasi")
+@RequestMapping("/api/v1/notifikasi")
 public class NotificationController {
     @Autowired
     RestTemplate restTemplate;
