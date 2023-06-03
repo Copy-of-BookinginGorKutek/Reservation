@@ -74,7 +74,7 @@ public class LapanganServiceImpl implements LapanganService{
 
     private void postBroadcastNotification(NotificationRequest notificationRequest, String token){
         HttpHeaders headers = getJSONHttpHeaders(token);
-        String url = "http://34.142.212.224:40/notification/send";
+        String url = "http://34.142.212.224:40/api/v1/notification/send";
         HttpEntity<NotificationRequest> http = new HttpEntity<>(notificationRequest, headers);
         restTemplate.exchange(url, HttpMethod.POST, http, Object.class);
     }
