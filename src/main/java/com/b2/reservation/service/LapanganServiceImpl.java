@@ -79,6 +79,7 @@ public class LapanganServiceImpl implements LapanganService{
         restTemplate.exchange(url, HttpMethod.POST, http, Object.class);
     }
 
+    @Generated
     private HttpHeaders getJSONHttpHeaders(String token){
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBearerAuth(token);
