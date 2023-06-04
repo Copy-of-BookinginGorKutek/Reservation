@@ -178,15 +178,6 @@ class ReservationControllerTest {
 
     @Test
     @WithMockUser(roles="USER")
-    void testGetLapanganDipakai() throws Exception{
-        when(service.createLapanganDipakaiList()).thenReturn(List.of(lapanganDipakai));
-        mvc.perform(get("/api/v1/reservation/get-lapangan-dipakai"))
-                .andExpect(status().isOk())
-                .andExpect(handler().methodName("getLapanganDipakai"));
-        verify(service, times(1)).createLapanganDipakaiList();
-    }
-    @Test
-    @WithMockUser(roles="USER")
     void testGetReservationById() throws Exception{
         when(service.findById(1)).thenReturn(reservasi);
         mvc.perform(get("/api/v1/reservation/get/1"))

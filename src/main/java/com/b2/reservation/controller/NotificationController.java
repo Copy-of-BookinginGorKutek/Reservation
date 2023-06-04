@@ -1,6 +1,7 @@
 package com.b2.reservation.controller;
 
 import com.b2.reservation.request.NotificationRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ public class NotificationController {
     @Autowired
     RestTemplate restTemplate;
 
+    @Operation(summary = "Send a new notification (microservice call)")
     @PostMapping(path = "/create", produces = "application/json")
     public ResponseEntity<Object> createNotification(@RequestBody NotificationRequest notificationRequest,
                                                      @CookieValue(name = "token", defaultValue = "") String token){

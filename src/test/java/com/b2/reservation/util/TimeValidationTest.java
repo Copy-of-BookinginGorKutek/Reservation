@@ -22,16 +22,16 @@ class TimeValidationTest {
         lap3 = new Lapangan();
         lap3.setId(3);
 
-        LocalDateTime s1 = LocalDateTime.of(2023,5,14,19,0,0);
-        LocalDateTime e1 = LocalDateTime.of(2023,5,14,20,0,0);
+        LocalDateTime s1 = LocalDateTime.of(2024,5,14,19,0,0);
+        LocalDateTime e1 = LocalDateTime.of(2024,5,14,20,0,0);
         LapanganDipakai lapd1 = new LapanganDipakai(lap1, s1, e1);
 
-        LocalDateTime s2 = LocalDateTime.of(2023,5,14,10,0,0);
-        LocalDateTime e2 = LocalDateTime.of(2023,5,14,19,0,0);
+        LocalDateTime s2 = LocalDateTime.of(2024,5,14,10,0,0);
+        LocalDateTime e2 = LocalDateTime.of(2024,5,14,19,0,0);
         LapanganDipakai lapd2 = new LapanganDipakai(lap2, s2, e2);
 
-        LocalDateTime s3 = LocalDateTime.of(2023,5,14,17,0,0);
-        LocalDateTime e3 = LocalDateTime.of(2023,5,14,20,0,0);
+        LocalDateTime s3 = LocalDateTime.of(2024,5,14,17,0,0);
+        LocalDateTime e3 = LocalDateTime.of(2024,5,14,20,0,0);
         LapanganDipakai lapd3 = new LapanganDipakai(lap3, s3, e3);
 
         List<LapanganDipakai> lapanganDipakaiList = new ArrayList<>();
@@ -46,24 +46,60 @@ class TimeValidationTest {
 
         tv = new TimeValidation(lapanganDipakaiList, lapanganList);
     }
+
     @Test
-    void findEmptyLapangan() {
-        LocalDateTime sc = LocalDateTime.of(2023,5,14,18,0,0);
-        LocalDateTime ec = LocalDateTime.of(2023,5,14,18,30,0);
+    void findEmptyLapanganIfLapanganIsAvailable() {
+        LocalDateTime sc = LocalDateTime.of(2024,5,14,18,0,0);
+        LocalDateTime ec = LocalDateTime.of(2024,5,14,18,30,0);
         assertEquals(lap1.getId(), tv.findEmptyLapangan(sc, ec).getId());
     }
 
     @Test
-    void isDateTimeValid() {
+    void findEmptyLapanganIfLapanganIsNotAvailable() {
+        LocalDateTime sc = LocalDateTime.of(2024,5,14,17,0,0);
+        LocalDateTime ec = LocalDateTime.of(2024,5,14,21,30,0);
+        assertEquals(-1, tv.findEmptyLapangan(sc, ec).getId());
+    }
+
+    @Test
+    void dateTimeValidationWithValidDateTime() {
         LocalDateTime sc = LocalDateTime.of(2024,5,14,18,0,0);
         LocalDateTime ec = LocalDateTime.of(2024,5,14,18,30,0);
         assertEquals(true, tv.isDateTimeValid(sc, ec));
     }
 
     @Test
-    void isLapanganAvailable() {
-        LocalDateTime sc = LocalDateTime.of(2023,5,14,19,0,0);
-        LocalDateTime ec = LocalDateTime.of(2023,5,14,21,0,0);
+    void dateTimeValidationWithFinishTimeBeforeStartTime() {
+        LocalDateTime sc = LocalDateTime.of(2024,5,14,18,50,0);
+        LocalDateTime ec = LocalDateTime.of(2024,5,14,18,30,0);
+        assertEquals(false, tv.isDateTimeValid(sc, ec));
+    }
+
+    @Test
+    void dateTimeValidationWithTimeBeforeCurrentTime() {
+        LocalDateTime sc = LocalDateTime.of(2020,5,14,18,0,0);
+        LocalDateTime ec = LocalDateTime.of(2020,5,14,18,30,0);
+        assertEquals(false, tv.isDateTimeValid(sc, ec));
+    }
+
+    @Test
+    void dateTimeValidationWithDurationMoreThanOneDay() {
+        LocalDateTime sc = LocalDateTime.of(2024,5,14,18,0,0);
+        LocalDateTime ec = LocalDateTime.of(2024,5,15,18,30,0);
+        assertEquals(false, tv.isDateTimeValid(sc, ec));
+    }
+
+    @Test
+    void isLapanganAvailableIfLapanganIsAvailable() {
+        LocalDateTime sc = LocalDateTime.of(2024,5,14,19,0,0);
+        LocalDateTime ec = LocalDateTime.of(2024,5,14,21,0,0);
         assertEquals(true, tv.isLapanganAvailable(sc, ec));
+    }
+
+    @Test
+    void isLapanganAvailableIfLapanganIsNotAvailable() {
+        LocalDateTime sc = LocalDateTime.of(2024,5,14,17,0,0);
+        LocalDateTime ec = LocalDateTime.of(2024,5,14,21,30,0);
+        assertEquals(false, tv.isLapanganAvailable(sc, ec));
     }
 }

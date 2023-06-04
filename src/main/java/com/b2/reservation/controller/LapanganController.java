@@ -4,6 +4,7 @@ import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
 import com.b2.reservation.request.OperasionalLapanganRequest;
 import com.b2.reservation.service.LapanganService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ import java.util.List;
 public class LapanganController {
     private final LapanganService lapanganService;
 
+    @Operation(summary = "Create a new court")
     @PostMapping("/create-lapangan")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Lapangan> createLapangan() {
@@ -28,6 +30,7 @@ public class LapanganController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Close an existing court")
     @PostMapping("/close-lapangan")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<OperasionalLapangan> createCloseDate(@RequestBody OperasionalLapanganRequest request, @RequestHeader(name = "Authorization") String token) {
@@ -36,6 +39,7 @@ public class LapanganController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get all closed courts")
     @GetMapping("/closed-lapangan")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<OperasionalLapangan>> findClosedLapangan() {
@@ -43,6 +47,7 @@ public class LapanganController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get all closed courts by date")
     @GetMapping("/closed-lapangan/by-date/{dateAsString}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<OperasionalLapangan>> findClosedLapanganByDate(@PathVariable String dateAsString) throws ParseException {
@@ -52,6 +57,7 @@ public class LapanganController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Delete lapangan's closed date by ID")
     @DeleteMapping("/closed-lapangan/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteOperasionalLapangan(@PathVariable Integer id){
