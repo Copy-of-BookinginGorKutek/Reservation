@@ -119,3 +119,4 @@ sonarqube-check:
     - main
     - develop
     - staging
+    - post-sprint-revision
