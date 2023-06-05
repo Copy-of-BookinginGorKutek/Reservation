@@ -30,7 +30,6 @@ import java.util.*;
 public class ReservasiServiceImpl implements ReservasiService {
     private final ReservasiRepository reservasiRepository;
     private final TambahanService tambahanService;
-    private final TambahanRepository tambahanRepository;
     private final KuponRepository kuponRepository;
     private final LapanganRepository lapanganRepository;
     private final OperasionalLapanganRepository operasionalLapanganRepository;
@@ -136,7 +135,6 @@ public class ReservasiServiceImpl implements ReservasiService {
         }
         Reservasi reservasi = this.reservasiRepository.findById(id).orElseThrow();
         Double lapanganPrice = getHours(reservasi.getWaktuMulai(), reservasi.getWaktuBerakhir()) * Lapangan.getCost();
-        System.out.println(lapanganPrice);
         return Math.toIntExact(Math.round(lapanganPrice) + tambahanService.getCost(reservasi));
     }
 
@@ -236,8 +234,11 @@ public class ReservasiServiceImpl implements ReservasiService {
 
     @Generated
     private boolean compareDateAndDatetime(Date date, LocalDateTime datetime){
-        return (date.getYear() + 1900) == datetime.getYear() &&
-                (date.getMonth() + 1) == datetime.getMonthValue() &&
-                date.getDate() == datetime.getDayOfMonth();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        return calendar.get(Calendar.YEAR) == datetime.getYear() &&
+                (calendar.get(Calendar.MONTH) + 1) == datetime.getMonthValue() &&
+                calendar.get(Calendar.DAY_OF_MONTH) == datetime.getDayOfMonth();
     }
 }

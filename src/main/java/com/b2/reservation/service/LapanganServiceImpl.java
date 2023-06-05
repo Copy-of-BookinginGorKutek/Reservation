@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -95,9 +96,14 @@ public class LapanganServiceImpl implements LapanganService{
         List<OperasionalLapangan> operasionalLapanganList = operasionalLapanganRepository.findAll();
         List<OperasionalLapangan> closedLapanganByDateList = new ArrayList<>();
         for (OperasionalLapangan operasionalLapangan: operasionalLapanganList){
-            if (operasionalLapangan.getTanggalLibur().getDate() == date.getDate() &&
-                    operasionalLapangan.getTanggalLibur().getYear() == date.getYear() &&
-                    operasionalLapangan.getTanggalLibur().getMonth() == date.getMonth()){
+            Calendar tanggalLibur = Calendar.getInstance();
+            tanggalLibur.setTime(operasionalLapangan.getTanggalLibur());
+            Calendar tanggalInput = Calendar.getInstance();
+            tanggalInput.setTime(date);
+
+            if (tanggalLibur.get(Calendar.DAY_OF_MONTH) == tanggalInput.get(Calendar.DAY_OF_MONTH) &&
+                    tanggalLibur.get(Calendar.YEAR) == tanggalInput.get(Calendar.YEAR) &&
+                    tanggalLibur.get(Calendar.MONTH) == tanggalInput.get(Calendar.MONTH)){
                 closedLapanganByDateList.add(operasionalLapangan);
             }
         }

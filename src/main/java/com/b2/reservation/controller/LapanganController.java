@@ -62,6 +62,6 @@ public class LapanganController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteOperasionalLapangan(@PathVariable Integer id){
         lapanganService.deleteOperasionalLapangan(id);
-        return ResponseEntity.ok(String.format("Deleted operasional lapangan with ID " + id));
+        return ResponseEntity.ok(String.format("Deleted operasional lapangan with ID %d", id));
     }
 }
