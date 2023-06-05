@@ -1,6 +1,7 @@
 package com.b2.reservation.service;
 
 import com.b2.reservation.exceptions.LapanganDoesNotExistException;
+import com.b2.reservation.model.User;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
 import com.b2.reservation.repository.LapanganRepository;
@@ -14,6 +15,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
 import java.util.Date;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -34,11 +40,18 @@ class LapanganServiceImplTest {
     @Mock
     private OperasionalLapanganRepository operasionalLapanganRepository;
 
+    @Mock
+    private RestTemplate restTemplate;
+
+    @Mock
+    private UserService userService;
+
     Lapangan lapangan;
 
     OperasionalLapanganRequest createRequest;
     OperasionalLapangan operasionalLapangan;
     OperasionalLapangan operasionalLapangan1;
+    List<User> userList;
 
 
 
@@ -63,6 +76,19 @@ class LapanganServiceImplTest {
                 .idLapangan(1)
                 .tanggalLibur(new Date(2020, 10, 10))
                 .build();
+        User user1 = User.builder()
+                .id(1)
+                .email("test@email.com")
+                .role("USER")
+                .build();
+        User user2 = User.builder()
+                .id(2)
+                .email("test2@email.com")
+                .role("USER")
+                .build();
+        userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
     }
 
     @Test
@@ -109,6 +135,15 @@ class LapanganServiceImplTest {
         Assertions.assertEquals(1, operasionalLapanganList.size());
         Assertions.assertEquals(operasionalLapangan1, operasionalLapanganList.get(0));
         verify(operasionalLapanganRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testSendNotificationToAllUsers(){
+        when(restTemplate.exchange(anyString(), any(), any(), eq(Object.class))).thenReturn(new ResponseEntity<>(userList, HttpStatusCode.valueOf(200)));
+        when(userService.getAllUser(anyString())).thenReturn(userList);
+        service.sendNotificationToAllUsers(operasionalLapangan, "TEST");
+        verify(restTemplate, times(2)).exchange(anyString(), any(), any(), eq(Object.class));
+        verify(userService, times(1)).getAllUser(anyString());
     }
 
 

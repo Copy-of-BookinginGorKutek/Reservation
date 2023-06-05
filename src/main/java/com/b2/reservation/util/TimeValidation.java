@@ -31,7 +31,7 @@ public class TimeValidation {
 
     public Lapangan findEmptyLapangan(LocalDateTime start, LocalDateTime end){
         for (LapanganDipakai lapanganDipakai: lapanganDipakaiList){
-            if (isLapanganUsed(lapanganDipakai, start, end)){
+            if (Boolean.TRUE.equals(isLapanganUsed(lapanganDipakai, start, end))){
                 mapLapanganDipakai.replace(lapanganDipakai.getLapangan(), true);
             }
         }

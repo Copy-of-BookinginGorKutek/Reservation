@@ -14,7 +14,7 @@ public class CreateAirMineral implements TambahanCommand {
     public CreateAirMineral(Reservasi reservasi, Integer amount, TambahanUtils tambahanUtils){
         this.reservasi = reservasi;
         this.amount = amount;
-        this.tambahanCategory = TambahanCategory.SHUTTLECOCK;
+        this.tambahanCategory = TambahanCategory.AIR_MINERAL;
         this.tambahanUtils = tambahanUtils;
     }
     @Override

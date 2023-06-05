@@ -17,7 +17,9 @@ import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,8 +58,11 @@ public class LapanganServiceImpl implements LapanganService{
     }
 
     public void sendNotificationToAllUsers(OperasionalLapangan operasionalLapangan, String token){
+        Date tanggalLibur = operasionalLapangan.getTanggalLibur();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String tanggalLiburString = format.format(tanggalLibur);
         List<User> listOfUsers = userService.getAllUser(token);
-        String message = "Lapangan " + operasionalLapangan.getIdLapangan() + " ditutup pada " + operasionalLapangan.getTanggalLibur();
+        String message = "Lapangan " + operasionalLapangan.getIdLapangan() + " ditutup pada " + tanggalLiburString;
         for (User user: listOfUsers){
             NotificationRequest request = NotificationRequest.builder()
                     .emailUser(user.getEmail())
@@ -68,13 +73,15 @@ public class LapanganServiceImpl implements LapanganService{
         }
     }
 
+    @Generated
     private void postBroadcastNotification(NotificationRequest notificationRequest, String token){
         HttpHeaders headers = getJSONHttpHeaders(token);
-        String url = "http://34.142.212.224:40/notification/send";
+        String url = "http://34.142.212.224:40/api/v1/notification/send";
         HttpEntity<NotificationRequest> http = new HttpEntity<>(notificationRequest, headers);
         restTemplate.exchange(url, HttpMethod.POST, http, Object.class);
     }
 
+    @Generated
     private HttpHeaders getJSONHttpHeaders(String token){
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBearerAuth(token);
@@ -90,9 +97,14 @@ public class LapanganServiceImpl implements LapanganService{
         List<OperasionalLapangan> operasionalLapanganList = operasionalLapanganRepository.findAll();
         List<OperasionalLapangan> closedLapanganByDateList = new ArrayList<>();
         for (OperasionalLapangan operasionalLapangan: operasionalLapanganList){
-            if (operasionalLapangan.getTanggalLibur().getDate() == date.getDate() &&
-                    operasionalLapangan.getTanggalLibur().getYear() == date.getYear() &&
-                    operasionalLapangan.getTanggalLibur().getMonth() == date.getMonth()){
+            Calendar tanggalLibur = Calendar.getInstance();
+            tanggalLibur.setTime(operasionalLapangan.getTanggalLibur());
+            Calendar tanggalInput = Calendar.getInstance();
+            tanggalInput.setTime(date);
+
+            if (tanggalLibur.get(Calendar.DAY_OF_MONTH) == tanggalInput.get(Calendar.DAY_OF_MONTH) &&
+                    tanggalLibur.get(Calendar.YEAR) == tanggalInput.get(Calendar.YEAR) &&
+                    (tanggalLibur.get(Calendar.MONTH) + 1) == (tanggalInput.get(Calendar.MONTH) + 1)){
                 closedLapanganByDateList.add(operasionalLapangan);
             }
         }
