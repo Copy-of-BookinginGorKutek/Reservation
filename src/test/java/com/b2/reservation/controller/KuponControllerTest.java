@@ -78,7 +78,7 @@ class KuponControllerTest {
     void testCreateKupon() throws Exception {
         when(service.create(createRequest)).thenReturn(kupon);
 
-        mvc.perform(post("/gor/create-kupon")
+        mvc.perform(post("/api/v1/gor/create-kupon")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContent))
                         .with(csrf()))
@@ -94,7 +94,7 @@ class KuponControllerTest {
     void testGetKuponAdmin() throws Exception {
         when(service.findAll()).thenReturn(List.of(kupon));
 
-        mvc.perform(get("/gor/get-all-kupon")
+        mvc.perform(get("/api/v1/gor/get-all-kupon")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContent))
                         .with(csrf()))
@@ -110,7 +110,7 @@ class KuponControllerTest {
     void testGetKuponUser() throws Exception {
         when(service.findAll()).thenReturn(List.of(kupon));
 
-        mvc.perform(get("/gor/get-all-kupon")
+        mvc.perform(get("/api/v1/gor/get-all-kupon")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContent))
                         .with(csrf()))
@@ -124,7 +124,7 @@ class KuponControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void testDeleteKupon() throws Exception {
-        mvc.perform(delete("/gor/delete-kupon/0")
+        mvc.perform(delete("/api/v1/gor/delete-kupon/0")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())

@@ -90,7 +90,7 @@ class ReservationControllerTest {
 
         when(service.findAll()).thenReturn(allReservation);
 
-        mvc.perform(get("/reservation/get-all")
+        mvc.perform(get("/api/v1/reservation/get-all")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("getAllReservation"))
@@ -104,7 +104,7 @@ class ReservationControllerTest {
     void testCreateOrder() throws Exception {
         when(service.create(any(ReservasiRequest.class))).thenReturn(reservasi);
 
-        mvc.perform(post("/reservation/create")
+        mvc.perform(post("/api/v1/reservation/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContent))
                         .with(csrf()))
@@ -121,7 +121,7 @@ class ReservationControllerTest {
     void testGetReservationByEmail() throws Exception {
         when(service.findAllByEmailUser(any(String.class))).thenReturn(List.of(reservasi));
 
-        mvc.perform(get("/reservation/get-self")
+        mvc.perform(get("/api/v1/reservation/get-self")
                         .param("emailUser", email)
                         )
                 .andExpect(status().isOk())
@@ -135,7 +135,7 @@ class ReservationControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void testDeleteMedicine() throws Exception {
-        mvc.perform(delete("/reservation/delete/1")
+        mvc.perform(delete("/api/v1/reservation/delete/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isOk())
@@ -149,7 +149,7 @@ class ReservationControllerTest {
     void testUpdateReservationAdmin() throws Exception {
         when(service.updateStatus(any(Integer.class), any(ReservasiRequest.class))).thenReturn(reservasi);
 
-        mvc.perform(put("/reservation/stat-update/1")
+        mvc.perform(put("/api/v1/reservation/stat-update/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContent))
                         .with(csrf()))
@@ -166,7 +166,7 @@ class ReservationControllerTest {
     void testUpdatePaymentProof() throws Exception {
         String linkExample = "{\"url\":\"https://drive.google.com/file/d/1tSy_MqFKbe8VoFjyy-QqAsyZh9UvAv39/view?usp=share_link\"}";
 
-        mvc.perform(put("/reservation/bukti-bayar/1")
+        mvc.perform(put("/api/v1/reservation/bukti-bayar/1")
                         .content(linkExample)
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
@@ -178,18 +178,9 @@ class ReservationControllerTest {
 
     @Test
     @WithMockUser(roles="USER")
-    void testGetLapanganDipakai() throws Exception{
-        when(service.createLapanganDipakaiList()).thenReturn(List.of(lapanganDipakai));
-        mvc.perform(get("/reservation/get-lapangan-dipakai"))
-                .andExpect(status().isOk())
-                .andExpect(handler().methodName("getLapanganDipakai"));
-        verify(service, times(1)).createLapanganDipakaiList();
-    }
-    @Test
-    @WithMockUser(roles="USER")
     void testGetReservationById() throws Exception{
         when(service.findById(1)).thenReturn(reservasi);
-        mvc.perform(get("/reservation/get/1"))
+        mvc.perform(get("/api/v1/reservation/get/1"))
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("getReservationById"));
         verify(service, times(1)).findById(1);
@@ -198,7 +189,7 @@ class ReservationControllerTest {
     @WithMockUser(roles="USER")
     void testGetReservasiByDateSuccess() throws Exception{
         when(service.findReservasiByDate(anyString())).thenReturn(List.of(reservasi));
-        mvc.perform(get("/reservation/get-reservasi-by-date/2023-05-14"))
+        mvc.perform(get("/api/v1/reservation/get-reservasi-by-date/2023-05-14"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(handler().methodName("getReservasiByDate"));
         verify(service, times(1)).findReservasiByDate(anyString());
@@ -208,7 +199,7 @@ class ReservationControllerTest {
     @WithMockUser(roles="USER")
     void testGetReservasiByDateFail() throws Exception{
         when(service.findReservasiByDate(anyString())).thenThrow(ParseException.class);
-        mvc.perform(get("/reservation/get-reservasi-by-date/2023-05-20"))
+        mvc.perform(get("/api/v1/reservation/get-reservasi-by-date/2023-05-20"))
                 .andExpect(status().isBadRequest())
                 .andExpect(handler().methodName("getReservasiByDate"));
         verify(service, times(1)).findReservasiByDate(anyString());

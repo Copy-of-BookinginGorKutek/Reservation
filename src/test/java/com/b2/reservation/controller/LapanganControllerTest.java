@@ -79,7 +79,7 @@ class LapanganControllerTest {
     void testCreateLapangan() throws Exception {
         when(service.create()).thenReturn(lapangan);
 
-        mvc.perform(post("/gor/create-lapangan")
+        mvc.perform(post("/api/v1/gor/create-lapangan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContentLapangan))
                         .with(csrf()))
@@ -95,7 +95,7 @@ class LapanganControllerTest {
         when(service.createCloseDate(any(OperasionalLapanganRequest.class), anyString())).thenReturn(operasionalLapangan);
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setBearerAuth("controllertokentesting");
-        mvc.perform(post("/gor/close-lapangan")
+        mvc.perform(post("/api/v1/gor/close-lapangan")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Util.mapToJson(bodyContentOperasionalLapangan))
                         .headers(requestHeaders)
@@ -111,7 +111,7 @@ class LapanganControllerTest {
     void testFindClosedLapangan() throws Exception{
         when(service.getAllClosedLapangan()).thenReturn(List.of(operasionalLapangan));
 
-        mvc.perform(get("/gor/closed-lapangan"))
+        mvc.perform(get("/api/v1/gor/closed-lapangan"))
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("findClosedLapangan"));
 
@@ -121,7 +121,7 @@ class LapanganControllerTest {
     @Test
     void testFindClosedLapanganByDate() throws Exception{
         when(service.getAllClosedLapanganByDate(any(Date.class))).thenReturn(null);
-        mvc.perform(get("/gor/closed-lapangan/by-date/2023-11-11"))
+        mvc.perform(get("/api/v1/gor/closed-lapangan/by-date/2023-11-11"))
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("findClosedLapanganByDate"));
 
@@ -130,7 +130,7 @@ class LapanganControllerTest {
 
     @Test
     void testDeleteOperationalLapangan() throws Exception{
-        mvc.perform(delete("/gor/closed-lapangan/delete/1"))
+        mvc.perform(delete("/api/v1/gor/closed-lapangan/delete/1"))
                 .andExpect(status().isOk())
                 .andExpect(handler().methodName("deleteOperasionalLapangan"));
 

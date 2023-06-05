@@ -22,7 +22,7 @@ public class UserService {
     public List<User> getAllUser(String token){
         HttpHeaders requestHeaders = getHttpHeaders(token);
         HttpEntity<Object> httpEntity = new HttpEntity<>(requestHeaders);
-        String url = "http://34.142.212.224:100/user/get-all";
+        String url = "http://34.142.212.224:100/api/v1/user/get-all";
         try {
             ResponseEntity<User[]> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, User[].class);
             return List.of(Objects.requireNonNull(responseEntity.getBody()));

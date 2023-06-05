@@ -5,6 +5,7 @@ import com.b2.reservation.request.PaymentProofRequest;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.service.ReservasiService;
 import com.b2.reservation.util.LapanganDipakai;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/api/v1/reservation")
 @RequiredArgsConstructor
 public class ReservationController {
     private final ReservasiService reservasiService;
 
+    @Operation(summary = "Create a new reservation")
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Reservasi> createReservation(@RequestBody ReservasiRequest reservationRequest) {
@@ -29,6 +30,7 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get all reservations")
     @GetMapping("/get-all")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<Reservasi>> getAllReservation() {
@@ -36,6 +38,7 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get a reservation by ID")
     @GetMapping("/get/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Reservasi> getReservationById(@PathVariable Integer id){
@@ -43,6 +46,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservasi);
     }
 
+    @Operation(summary = "Get all reservations by email")
     @GetMapping("/get-self")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<List<Reservasi>> getAllReservationByUser(@RequestParam(value = "emailUser") String emailUser) {
@@ -50,6 +54,7 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Update reservation status by ID")
     @PutMapping("/stat-update/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Reservasi> updateReservation(@PathVariable Integer id,
@@ -58,6 +63,7 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Update payment proof by reservation ID")
     @PutMapping("/bukti-bayar/{id}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<Reservasi> putProofOfPayment(@PathVariable Integer id,
@@ -66,6 +72,7 @@ public class ReservationController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Delete reservation by ID")
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<String> deleteReservation(@PathVariable Integer id) {
@@ -73,13 +80,7 @@ public class ReservationController {
         return ResponseEntity.ok(String.format("Deleted reservation with id %d", id));
     }
 
-    @GetMapping("/get-lapangan-dipakai")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
-    public ResponseEntity<List<LapanganDipakai>> getLapanganDipakai() {
-        List<LapanganDipakai> response = reservasiService.createLapanganDipakaiList();
-        return ResponseEntity.ok(response);
-    }
-
+    @Operation(summary = "Get reservations by date")
     @GetMapping("/get-reservasi-by-date/{date}")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
     public ResponseEntity<List<Reservasi>> getReservasiByDate(@PathVariable String date){
