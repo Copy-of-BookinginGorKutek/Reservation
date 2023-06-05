@@ -104,7 +104,7 @@ public class LapanganServiceImpl implements LapanganService{
 
             if (tanggalLibur.get(Calendar.DAY_OF_MONTH) == tanggalInput.get(Calendar.DAY_OF_MONTH) &&
                     tanggalLibur.get(Calendar.YEAR) == tanggalInput.get(Calendar.YEAR) &&
-                    tanggalLibur.get(Calendar.MONTH) == tanggalInput.get(Calendar.MONTH)){
+                    (tanggalLibur.get(Calendar.MONTH) + 1) == (tanggalInput.get(Calendar.MONTH) + 1)){
                 closedLapanganByDateList.add(operasionalLapangan);
             }
         }
