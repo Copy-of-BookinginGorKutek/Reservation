@@ -73,6 +73,7 @@ public class LapanganServiceImpl implements LapanganService{
         }
     }
 
+    @Generated
     private void postBroadcastNotification(NotificationRequest notificationRequest, String token){
         HttpHeaders headers = getJSONHttpHeaders(token);
         String url = "http://34.142.212.224:40/api/v1/notification/send";

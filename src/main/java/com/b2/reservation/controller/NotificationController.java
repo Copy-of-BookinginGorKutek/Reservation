@@ -2,6 +2,7 @@ package com.b2.reservation.controller;
 
 import com.b2.reservation.request.NotificationRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/v1/notifikasi")
+@Generated
 public class NotificationController {
     @Autowired
     RestTemplate restTemplate;
