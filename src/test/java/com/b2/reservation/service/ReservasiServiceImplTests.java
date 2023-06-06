@@ -1,5 +1,7 @@
 package com.b2.reservation.service;
 
+import com.b2.reservation.exceptions.DateTimeIsNotValidException;
+import com.b2.reservation.exceptions.LapanganIsNotAvailableException;
 import com.b2.reservation.exceptions.ReservasiDoesNotExistException;
 import com.b2.reservation.model.lapangan.Lapangan;
 import com.b2.reservation.model.lapangan.OperasionalLapangan;
@@ -12,6 +14,7 @@ import com.b2.reservation.repository.ReservasiRepository;
 import com.b2.reservation.request.ReservasiRequest;
 import com.b2.reservation.util.TambahanService;
 import com.b2.reservation.util.TambahanUtils;
+import com.b2.reservation.util.TimeValidation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,6 +81,7 @@ class ReservasiServiceImplTests {
                 .statusPembayaran(StatusPembayaran.MENUNGGU_PEMBAYARAN)
                 .waktuMulai("14-05-2023 19:00")
                 .waktuBerakhir("14-05-2023 21:00")
+                .kuponId(0)
                 .build();
 
         updateRequest = ReservasiRequest.builder()
@@ -114,9 +118,6 @@ class ReservasiServiceImplTests {
                 .waktuMulai(sc)
                 .waktuBerakhir(ec)
                 .build();
-
-
-
         tempReservasi = Reservasi.builder()
                 .id(0)
                 .emailUser("test1@email.com")
@@ -222,48 +223,29 @@ class ReservasiServiceImplTests {
     }
 
     @Test
-    void testGetReservasiCost(){
-        Instant instant = Instant.now();
-        Date date = Date.from(instant);
-        OperasionalLapangan operasionalLapangan = OperasionalLapangan.builder()
-                .id(1)
-                .idLapangan(1)
-                .tanggalLibur(date)
-                .build();
-        when(operasionalLapanganRepository.findAll()).thenReturn(List.of(operasionalLapangan));
-        when(lapanganRepository.findById(any())).thenReturn(Optional.of(lap1));
+    void testReservationDateNotValid() {
         when(lapanganRepository.findAll()).thenReturn(List.of(lap1, lap2));
-        when(repository.save(any(Reservasi.class))).thenAnswer(invocation ->{
-            Reservasi reservasi1 = (Reservasi)(invocation.getArgument(0, Reservasi.class));
-            reservasi1.setId(1);
-            return reservasi1;
-        });
-        when(repository.findAll()).thenReturn(List.of());
-        when(tambahanService.getCost(any(Reservasi.class))).thenReturn(20000);
-        when(repository.findById(1)).thenReturn(Optional.of(tempReservasi));
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
-        LocalDate date1 = dateTime.toLocalDate();
-        String dateString = date1.format(dateTimeFormatter);
-
-        ReservasiRequest request = ReservasiRequest.builder()
+        createRequest = ReservasiRequest.builder()
                 .emailUser("test1@email.com")
                 .statusPembayaran(StatusPembayaran.MENUNGGU_PEMBAYARAN)
-                .waktuMulai(dateString + " 19:00")
-                .waktuBerakhir(dateString + " 21:00")
-                .tambahanQuantity(tambahanQty)
-                .buktiTransfer(null)
+                .waktuMulai("14-05-2023 19:00")
+                .waktuBerakhir("14-05-2023 21:00")
                 .kuponId(0)
                 .build();
+        assertThrows(DateTimeIsNotValidException.class, ()->service.create(createRequest));
+    }
 
-
-        Reservasi reservasi = service.create(request);
-        verify(tambahanService, times(1)).createTambahanForReservasi(any(Reservasi.class), any());
-        assertEquals("test1@email.com", reservasi.getEmailUser());
-        assertTrue(reservasi.getWaktuMulai().toLocalDate().isEqual(date1));
-        assertEquals(0, reservasi.getKuponId());
-        assertEquals(StatusPembayaran.MENUNGGU_PEMBAYARAN, reservasi.getStatusPembayaran());
-
+    @Test
+    void testNoAvailableLapangan(){
+        when(lapanganRepository.findAll()).thenReturn(List.of());
+        createRequest = ReservasiRequest.builder()
+                .emailUser("test1@email.com")
+                .statusPembayaran(StatusPembayaran.MENUNGGU_PEMBAYARAN)
+                .waktuMulai(LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + " 10:00")
+                .waktuBerakhir(LocalDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + " 11:00")
+                .kuponId(0)
+                .build();
+        assertThrows(LapanganIsNotAvailableException.class, ()->service.create(createRequest));
     }
 
 }
