@@ -105,6 +105,7 @@ public class ReservasiServiceImpl implements ReservasiService {
                 .waktuMulai(reservasi.getWaktuMulai())
                 .waktuBerakhir(reservasi.getWaktuBerakhir())
                 .idLapangan(reservasi.getIdLapangan())
+                .kuponId(reservasi.getKuponId())
                 .build();
         return this.reservasiRepository.save(newReservasi);
     }
@@ -206,6 +207,7 @@ public class ReservasiServiceImpl implements ReservasiService {
                 .idLapangan(before.getIdLapangan())
                 .waktuMulai(before.getWaktuMulai())
                 .waktuBerakhir(before.getWaktuBerakhir())
+                .kuponId(before.getKuponId())
                 .build();
 
         return reservasiRepository.save(after);
