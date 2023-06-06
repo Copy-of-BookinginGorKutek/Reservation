@@ -11,6 +11,7 @@ variables:
   CONTAINER_NAME: $CONTAINER_NAME
   GCP_USERNAME: $GCP_USERNAME
   GCP_STATIC_IP: $GCP_STATIC_IP
+  GIT_DEPTH: "0"
 
 
 stages:
@@ -58,6 +59,7 @@ Test:
     - gradle test
     - gradle jacocoTestReport
     - grep -Eo "Total.*?([0-9]{1,3})%" build/jacocoHtml/index.html
+    - gradle test jacocoTestReport sonarqube
   artifacts:
     when: always
     reports:
